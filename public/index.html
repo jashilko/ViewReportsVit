@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список телефонных записей</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Список телефонных записей</h1>
+
+        <!-- Фильтры -->
+        <div class="filter">
+            <label for="start-time">Начало: </label>
+            <input type="time" id="start-time">
+            <label for="end-time">Конец: </label>
+            <input type="time" id="end-time">
+            <label for="surname">Фамилия: </label>
+            <input type="text" id="surname" placeholder="Введите фамилию">
+            <button onclick="filterByTimeAndSurname()">Применить фильтры</button>
+        </div>
+
+        <!-- Таблица с записями -->
+        <table id="recordings-table">
+            <thead>
+                <tr>
+                    <th>Фамилия</th>
+                    <th>Название записи</th>
+                    <th>Время</th>
+                    <th>Прослушать</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Записи будут загружаться сюда -->
+            </tbody>
+        </table>
+
+    </div>
+
+    <script src="{{ url_for('static', path='/script.js') }}"></script>
+</body>
+</html>
