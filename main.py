@@ -4,12 +4,14 @@ from typing import List, Optional
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from reports.router import router as router_cdr
+from users.router import router as router_users
 
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory="public")
 app.include_router(router_cdr)
+app.include_router(router_users)
 
 # Модель для записи
 class Recording(BaseModel):
