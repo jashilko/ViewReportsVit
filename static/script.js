@@ -10,6 +10,21 @@ const recordings = [
 
 // Функция для отображения списка записей в таблице
 function displayRecordings(filteredRecordings) {
+    try{
+        const response = await fetch('/reports');
+
+        if (!response.ok) {
+            // Получаем данные об ошибке
+            const errorData = await response.json();
+            //displayErrors(errorData);  // Отображаем ошибки
+            return;  // Прерываем выполнение функции
+        }
+        const reports = await response.json();
+    }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        alert('Произошла ошибка при регистрации. Пожалуйста, попробуйте снова.');
+    }
     const tableBody = document.querySelector('#recordings-table tbody');
     tableBody.innerHTML = ''; // очищаем таблицу перед загрузкой
 
@@ -47,4 +62,4 @@ function filterByTimeAndSurname() {
 }
 
 // Загружаем список записей при загрузке страницы
-window.onload = () => displayRecordings(recordings);
+//window.onload = () => displayRecordings(recordings);

@@ -17,3 +17,13 @@ class SiteUser(Base):
 
     def __repr__(self):
         return f"{self.__class__.__name__}(id={self.id})"
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "phone_number": self.phone_number,
+            "is_operator": self.is_operator,
+            "is_teamlead": self.is_teamlead,
+            "is_controller": self.is_controller,
+            "is_admin": self.is_admin,
+        }

@@ -10,3 +10,15 @@ class CDR(Base):
     billsec = Column(Integer)
     disposition = Column(String)
     recordingfile = Column(String)
+
+
+    def to_dict(self):
+        return {
+            "calldate": self.calldate,
+            "src": self.src,
+            "dst": self.dst,
+            "duration": self.duration,
+            "billsec": self.billsec,
+            "disposition": self.disposition,
+            "recordingfile": self.recordingfile,
+        }

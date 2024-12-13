@@ -1,14 +1,12 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Request
 from users.auth import get_password_hash, authenticate_user, create_access_token
 from fastapi.responses import Response
 from users.dao import UsersDAO
 from users.schemas import SUserRegister, SUserAuth
 from users.dependencies import get_current_user
-
-
+from fastapi.templating import Jinja2Templates
 
 router = APIRouter(prefix='/auth', tags=['Auth'])
-
 
 @router.post("/register/")
 def register_user(user_data: SUserRegister) -> dict:
