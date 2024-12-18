@@ -27,3 +27,7 @@ class SiteUser(Base):
             "is_controller": self.is_controller,
             "is_admin": self.is_admin,
         }
+
+class userman_users(Base):
+    id: Mapped[int_pk]
+    username: Mapped[str_uniq]

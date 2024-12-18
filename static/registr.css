@@ -6,7 +6,7 @@ body {
 }
 
 .login-container {
-    width: 300px;
+    width: 280px; /* Уменьшена ширина контейнера */
     margin: 100px auto;
     padding: 20px;
     background-color: white;
@@ -30,7 +30,7 @@ label {
 }
 
 input {
-    width: 90%;
+    width: 90%;  /* Поля занимают всю доступную ширину */
     padding: 10px;
     margin-top: 5px;
     font-size: 14px;
@@ -39,7 +39,7 @@ input {
 }
 
 button {
-    width: 95%;
+    width: 100%;
     padding: 10px;
     font-size: 16px;
     color: white;
@@ -52,6 +52,22 @@ button {
 
 button:hover {
     background-color: #45a049;
+}
+
+/* Стили для ссылки на регистрацию */
+.register-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.register-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
 }
 
 .error-message {

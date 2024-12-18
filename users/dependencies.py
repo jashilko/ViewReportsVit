@@ -1,6 +1,9 @@
 from fastapi import Request, HTTPException, status, Depends
 from jose import jwt, JWTError
 from datetime import datetime, timezone
+
+from starlette.responses import RedirectResponse
+
 from config import get_auth_data
 from users.dao import UsersDAO
 from users.schemas import SUserAuth
@@ -9,7 +12,9 @@ from users.schemas import SUserAuth
 def get_token(request: Request):
     token = request.cookies.get('users_access_token')
     if not token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Token not found')
+        raise HTTPException(
+            status_code=status.HTTP_307_TEMPORARY_REDIRECT,
+            headers={'Location': '/login'})
     return token
 
 

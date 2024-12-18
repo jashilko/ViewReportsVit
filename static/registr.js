@@ -18,7 +18,7 @@ loginForm.addEventListener('submit', async function (event) {
 
     // Отправляем POST-запрос на сервер
     try {
-        const response = await fetch('/auth/login', {
+        const response = await fetch('/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,18 +29,15 @@ loginForm.addEventListener('submit', async function (event) {
         // Проверяем успешность запроса
         if (response.ok) {
             // Если запрос успешен, редиректим пользователя на другую страницу
-            window.location.href = '/';  // Пример редиректа
+            window.location.href = '/login';  // Пример редиректа
         } else {
             // Если ошибка (например, неверные данные), показываем сообщение
             const errorData = await response.json();
-            if (errorData && errorData.detail) {
-                errorMessage.style.display = 'block';
-                errorMessage.value =errorData.detail
-               }
-
+            alert(errorData.detail)
+            return;
         }
     } catch (error) {
         console.error('Ошибка при отправке данных:', error);
-        alert('Произошла ошибка при попытке войти. Попробуйте снова.');
+        alert('Произошла ошибка при попытке регистрации. Попробуйте снова.');
     }
 });
