@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 
 class SCRD(BaseModel):
@@ -12,3 +12,8 @@ class SCRD(BaseModel):
     billsec: int = Field(..., description="Что-то в секундах")
     disposition: str = Field(..., min_length=1, max_length=45, description="Статус")
     recordingfile: str = Field(..., max_length=255, description="Ссылка на файл с записью разговора")
+
+    @field_validator("calldate")
+    @classmethod
+    def validate_calldate(cls, values: datetime) -> str:
+        return values.strftime("%d-%m-%Y %H:%M:%S")

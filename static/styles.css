@@ -141,4 +141,5 @@ th {
 audio {
     width: 100%;
     max-width: 250px; /* Уменьшение размера плеера */
+    max-height: 100px;
 }

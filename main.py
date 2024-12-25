@@ -1,14 +1,19 @@
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request, Depends, Form
 from pydantic import BaseModel
 from typing import List, Optional
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
+import datetime
 
+from reports.model import CDR
+from reports.rb import RBCdr
 from reports.router import router as router_cdr
 from users.router import router as router_users
-from reports.router import get_all_cdr
+from reports.router import get_all_cdr, get_all_calls_by_oper
 from users.router import get_me
+from pages.router import router as router_pages
+from reports.dao import CdrDAO
 
 
 app = FastAPI()
@@ -16,6 +21,8 @@ app.mount('/static', StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory="public")
 app.include_router(router_cdr)
 app.include_router(router_users)
+app.include_router(router_pages)
+
 
 @app.get("/registr")
 def login(request: Request):
@@ -31,5 +38,10 @@ def login(request: Request):
 
 
 @app.get("/")
-def main(request: Request, reports=Depends(get_all_cdr)):
-    return templates.TemplateResponse(name="index.html", context={'request': request, 'reports1': reports})
+def main(request: Request, reports=Depends(get_all_calls_by_oper), user = Depends(get_me)):
+    filter_conditions = reports['req']
+    return templates.TemplateResponse(name="index.html",
+                                      context={'request': request,
+                                               'reports1': reports['res'],
+                                               'user': user,
+                                               'filter': filter_conditions}, )

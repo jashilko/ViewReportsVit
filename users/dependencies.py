@@ -31,7 +31,7 @@ def get_current_user(token: str = Depends(get_token)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Токен истек')
 
     phone_number = payload.get('sub')
-    print(phone_number)
+
     if not phone_number:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Не найден ID пользователя')
 

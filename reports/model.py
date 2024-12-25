@@ -14,7 +14,7 @@ class CDR(Base):
 
     def to_dict(self):
         return {
-            "calldate": self.calldate,
+            "calldate": self.calldate.strftime("%d.%m.%Y %H:%M:%S"),
             "src": self.src,
             "dst": self.dst,
             "duration": self.duration,
