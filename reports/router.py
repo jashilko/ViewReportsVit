@@ -17,11 +17,12 @@ def get_all_cdr(request_body: RBCdr = Depends(), user_data: SUserAuth = Depends(
 def get_all_calls_by_oper(request_body: RBCdr = Depends(), user_data: SUserAuth = Depends(get_current_user)) -> list[SCRD]:
     # Если пользователь не указан в запросе, делаем запрос по залогиненному
     if 'oper' in request_body.to_dict():
-        pass
+        if request_body.to_dict()['oper'] != user_data.phone_number:
+            return {'req': request_body.to_dict(), 'res': {}, 'warning': 'Нет прав на просмотр звонков выбранного оператора'}
     else:
         request_body.oper = user_data.phone_number
     if 'date_from' in request_body.to_dict():
         pass
     else:
         request_body.date_from = str(datetime.datetime.today() - datetime.timedelta(30))
-    return {'req': request_body.to_dict(), 'res': CdrDAO.find_cdr_byoper(request_body.to_dict())}
+    return {'req': request_body.to_dict(), 'res': CdrDAO.find_cdr_byoper(request_body.to_dict()), 'warning': ""}

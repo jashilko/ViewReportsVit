@@ -3,47 +3,28 @@ header {
     background-color: #4CAF50;
     color: white;
     padding: 15px 0;
-    width: 80%; /* Ширина шапки равна ширине основной таблицы */
     margin: 0 auto; /* Центрируем шапку */
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Центрируем заголовок */
     align-items: center;
-    padding-left: 20px; /* Отступ слева */
-    padding-right: 20px; /* Отступ справа */
+    position: relative; /* Для позиционирования user-info */
+    box-sizing: border-box;
+    width: 100%; /* Ширина 100% от контейнера */
+    max-width: 80%; /* Совпадает с шириной .container */
 }
 
 /* Заголовок по центру */
 header h1 {
     font-size: 24px;
-    text-align: center; /* Заголовок по центру */
+    text-align: center;
     margin: 0;
-    flex-grow: 1; /* Чтобы заголовок занял центральное место */
-}
-
-/* Меню слева */
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-}
-
-nav ul li {
-    margin-right: 20px; /* Отступ между пунктами меню */
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-nav ul li a:hover {
-    text-decoration: underline;
+    flex-grow: 1;
 }
 
 /* Информация о пользователе и кнопка "Выйти" справа */
 .user-info {
+    position: absolute;
+    right: 20px; /* Расположение справа */
     display: flex;
     align-items: center;
 }
@@ -67,7 +48,6 @@ button {
 button:hover {
     background-color: #e53935;
 }
-
 /* Стили для всего тела страницы */
 body {
     font-family: Arial, sans-serif;
@@ -171,4 +151,17 @@ audio {
 .statistics ul li {
     font-size: 14px;
     margin-bottom: 5px;
+}
+
+/* Панель предупреждения */
+.warning-panel {
+    background-color: #ffe6e6; /* Светло-красный фон */
+    border: 1px solid #ffcccc; /* Красная граница */
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #cc0000; /* Темно-красный текст */
+    font-size: 14px;
+    font-weight: bold;
 }

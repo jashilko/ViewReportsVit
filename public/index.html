@@ -9,15 +9,6 @@
 <body>
 <!-- Шапка сайта -->
 <header>
-    <!-- Меню слева -->
-    <nav>
-        <ul>
-            <li><a href="/">Главная</a></li>
-            <li><a href="/records">Записи</a></li>
-            <li><a href="/contact">Контакты</a></li>
-        </ul>
-    </nav>
-
     <!-- Заголовок по центру -->
     <h1>Телефонные записи</h1>
 
@@ -28,6 +19,11 @@
     </div>
 </header>
 <div class="container">
+        {% if warning_flag != '' %}
+        <div class="warning-panel">
+            <p>Предупреждение: {{warning_flag}}</p>
+        </div>
+        {% endif %}
 
 <div class="statistics">
     <h2>Статистика звонков за выбранный период: </h2>

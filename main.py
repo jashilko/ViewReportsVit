@@ -53,12 +53,14 @@ def main(request: Request, reports=Depends(get_all_calls_by_oper), user = Depend
         "total_billsec": total_billsec,
         "average_call_duration": average_call_duration,
     }
+    warning_flag = reports['warning']
 
     return templates.TemplateResponse(name="index.html",
                                       context={'request': request,
                                                'reports1': reports['res'],
                                                'user': user,
                                                'filter': filter_conditions,
-                                               "stats": stats},
+                                               "stats": stats,
+                                               'warning_flag': warning_flag,},
 
                                       )
