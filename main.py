@@ -40,8 +40,25 @@ def login(request: Request):
 @app.get("/")
 def main(request: Request, reports=Depends(get_all_calls_by_oper), user = Depends(get_me)):
     filter_conditions = reports['req']
+    filtered_reports = reports['res']
+    total_calls = len(filtered_reports)
+    incoming_calls = len([r for r in filtered_reports if r["dst"] == user.phone_number])
+    outgoing_calls = total_calls - incoming_calls
+    total_billsec = sum(r["billsec"] for r in filtered_reports)
+    average_call_duration = total_billsec / total_calls if total_calls > 0 else 0
+    stats = {
+        "total_calls": total_calls,
+        "incoming_calls": incoming_calls,
+        "outgoing_calls": outgoing_calls,
+        "total_billsec": total_billsec,
+        "average_call_duration": average_call_duration,
+    }
+
     return templates.TemplateResponse(name="index.html",
                                       context={'request': request,
                                                'reports1': reports['res'],
                                                'user': user,
-                                               'filter': filter_conditions}, )
+                                               'filter': filter_conditions,
+                                               "stats": stats},
+
+                                      )

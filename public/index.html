@@ -29,8 +29,18 @@
 </header>
 <div class="container">
 
-
-    <h1>Список телефонных записей</h1>
+<div class="statistics">
+    <h2>Статистика звонков за выбранный период: </h2>
+    <ul>
+        <li>Общее количество звонков: {{ stats.total_calls }}</li>
+        <li>Количество входящих звонков: {{ stats.incoming_calls }}</li>
+        <li>Количество исходящих звонков: {{ stats.outgoing_calls }}</li>
+        <li>Общий трафик (секунды): {{ stats.total_billsec }}</li>
+        <li>Среднее время звонка (секунды): {{ "%.2f"|format(stats.average_call_duration) }}</li>
+    </ul>
+</div>
+    <div class="statistics">
+    <h1>Список телефонных записей: </h1>
 
     <!-- Фильтры -->
     <form id="filter-form" class="filter">
@@ -73,7 +83,7 @@
         {% endfor %}
         </tbody>
     </table>
-
+    </div>
 </div>
 <script src="{{ url_for('static', path='/script.js') }}"></script>
 </body>
