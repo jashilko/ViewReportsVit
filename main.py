@@ -11,7 +11,7 @@ from reports.rb import RBCdr
 from reports.router import router as router_cdr
 from users.router import router as router_users
 from reports.router import get_all_cdr, get_all_calls_by_oper
-from users.router import get_me
+from users.router import get_me, get_all_teamleader
 from pages.router import router as router_pages
 from reports.dao import CdrDAO
 
@@ -24,9 +24,10 @@ app.include_router(router_users)
 app.include_router(router_pages)
 
 
-@app.get("/registr")
-def login(request: Request):
-    return templates.TemplateResponse(name='registr.html', context={"request": request})
+@app.get("/register")
+def login(request: Request, team_leaders=Depends(get_all_teamleader)):
+    return templates.TemplateResponse(name='register.html', context={"request": request,
+                                                                      "group_leader_phones": team_leaders})
 
 @app.get("/login")
 def login(request: Request):

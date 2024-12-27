@@ -2,6 +2,10 @@
 const loginForm = document.getElementById('login-form');
 const errorMessage = document.getElementById('error-message');
 
+function openRegister() {
+    window.location.href = '/register';
+}
+
 // Обработчик отправки формы
 loginForm.addEventListener('submit', async function (event) {
     event.preventDefault();  // Отменяем стандартное поведение формы

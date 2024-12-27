@@ -30,32 +30,51 @@ label {
 }
 
 input {
-    width: 90%;
+    width: 100%;
     padding: 10px;
     margin-top: 5px;
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
 button {
-    width: 95%;
+    width: 100%;
     padding: 10px;
-    font-size: 16px;
+    font-size: 16px; /* Унифицированный размер шрифта для всех кнопок */
     color: white;
-    background-color: #4CAF50;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    box-sizing: border-box;
 }
 
-button:hover {
+button#login-button {
+    background-color: #4CAF50; /* Зеленый цвет для кнопки "Войти" */
+}
+
+button#login-button:hover {
     background-color: #45a049;
 }
 
-.error-message {
+#error-message {
     color: red;
     text-align: center;
     margin-top: 15px;
+}
+
+.register-container {
+    margin-top: 15px;
+    text-align: center;
+}
+
+button#register-button {
+    background-color: #007BFF; /* Синий цвет для кнопки "Регистрация" */
+    font-size: 16px; /* Унифицированный размер шрифта */
+}
+
+button#register-button:hover {
+    background-color: #0056b3; /* Более насыщенный синий при наведении */
 }

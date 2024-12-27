@@ -12,7 +12,7 @@ class SiteUser(Base):
     is_teamlead: Mapped[bool] = mapped_column(default=False, server_default=text('false'), nullable=False)
     is_controller: Mapped[bool] = mapped_column(default=False, server_default=text('false'), nullable=False)
     is_admin: Mapped[bool] = mapped_column(default=False, server_default=text('false'), nullable=False)
-
+    phone_teamleader: Mapped[str]
     extend_existing = True
 
     def __repr__(self):
@@ -26,6 +26,7 @@ class SiteUser(Base):
             "is_teamlead": self.is_teamlead,
             "is_controller": self.is_controller,
             "is_admin": self.is_admin,
+            "phone_teamleader": self.phone_teamleader
         }
 
 class userman_users(Base):

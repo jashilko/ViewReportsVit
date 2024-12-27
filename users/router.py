@@ -47,3 +47,7 @@ def get_me(user_data: SUserAuth = Depends(get_current_user)):
 def logout_user(response: Response):
     response.delete_cookie(key="users_access_token")
     return {'ok': True, 'message': 'Пользователь успешно вышел из системы'}
+
+@router.get("/all_operators", summary="Получить всех операторов")
+def get_all_teamleader() -> list():
+    return UsersDAO.all_teamleader()
