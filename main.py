@@ -10,7 +10,7 @@ from reports.model import CDR
 from reports.rb import RBCdr
 from reports.router import router as router_cdr
 from users.router import router as router_users
-from reports.router import get_all_cdr, get_all_calls_by_oper
+from reports.router import get_all_cdr, get_all_calls_by_oper, get_group_oper_stat
 from users.router import get_me, get_all_teamleader
 from pages.router import router as router_pages
 from reports.dao import CdrDAO
@@ -43,7 +43,7 @@ def main(request: Request, reports=Depends(get_all_calls_by_oper), user = Depend
     filter_conditions = reports['req']
     filtered_reports = reports['res']
     total_calls = len(filtered_reports)
-    incoming_calls = len([r for r in filtered_reports if r["dst"] == user.phone_number])
+    incoming_calls = len([r for r in filtered_reports if r["dst"] == user['phone_number']])
     outgoing_calls = total_calls - incoming_calls
     total_billsec = sum(r["billsec"] for r in filtered_reports)
     average_call_duration = total_billsec / total_calls if total_calls > 0 else 0
@@ -64,4 +64,31 @@ def main(request: Request, reports=Depends(get_all_calls_by_oper), user = Depend
                                                "stats": stats,
                                                'warning_flag': warning_flag,},
 
+                                      )
+
+@app.get("/teamleader")
+def main(request: Request, reports=Depends(get_group_oper_stat), user=Depends(get_me)):
+    filter_conditions = reports['req']
+    filtered_reports = reports['res']
+    total_calls = sum(r.get("total_calls", 0) or 0 for r in filtered_reports)
+    incoming_calls = sum(r.get("incoming_calls", 0) or 0 for r in filtered_reports)
+    outgoing_calls = total_calls
+    total_billsec = sum(r.get("total_duration", 0) or 0 for r in filtered_reports)
+    stats = {
+        "total_calls": total_calls,
+        "incoming_calls": 0,
+        "outgoing_calls": outgoing_calls,
+        "total_billsec": total_billsec,
+        "average_call_duration": 0,
+    }
+    warning_flag = reports['warning']
+
+    return templates.TemplateResponse(name="teamleader.html",
+                                      context={'request': request,
+                                               'reports2': reports['res'],
+                                               'user': user,
+                                               'filter': filter_conditions,
+                                               "stats": stats,
+                                               'warning_flag': warning_flag,
+                                               },
                                       )

@@ -12,3 +12,7 @@ class SUserRegister(BaseModel):
 class SUserAuth(BaseModel):
     phone_number:str = Field(..., description="Номер телефона")
     password: str = Field(..., min_length=5, max_length=50, description="Пароль, от 5 до 50 знаков")
+
+class SUserInfo():
+    phone_number: str = Field(..., description="Номер телефона")
+    role: str = Field(..., description="Роль")

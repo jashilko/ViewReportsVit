@@ -8,7 +8,6 @@
 </head>
 <body>
 <!-- Шапка сайта -->
-
 <header>
     <!-- Пункт меню слева -->
     <div class="menu">
@@ -35,7 +34,7 @@
         {% endif %}
 
 <div class="statistics">
-    <h2>Статистика звонков оператора {{filter.oper}} за выбранный период: </h2>
+    <h2>Статистика группы {{user.phone_number}} за выбранный период: </h2>
     <ul>
         <li>Общее количество звонков: {{ stats.total_calls }}</li>
         <li>Количество входящих звонков: {{ stats.incoming_calls }}</li>
@@ -45,7 +44,7 @@
     </ul>
 </div>
     <div class="statistics">
-    <h1>Список телефонных записей оператора {{filter.oper}}: </h1>
+    <h1>Список группы {{user.phone_number}}: </h1>
 
     <!-- Фильтры -->
     <form id="filter-form" class="filter">
@@ -53,8 +52,6 @@
         <input type="date" id="date_from" value={{ filter.date_from}}>
         <label for="date_to">Конец: </label>
         <input type="date" id="date_to" value={{ filter.date_to}}>
-        <label for="oper">Телефон: </label>
-        <input type="text" id="oper" placeholder="Введите номер" value={{ filter.oper}}>
         <button id="filter-button" class="submit-button">Применить фильтры</button>
     </form>
 
@@ -62,27 +59,23 @@
     <table id="recordings-table">
         <thead>
         <tr>
-            <th>Дата звонка</th>
-            <th>Кто звонил</th>
-            <th>Кому звонили</th>
-            <th>Общее время</th>
-            <th>Время разговора</th>
-            <th>Запись разговора</th>
+            <th>Оператор</th>
+            <th>Всего звонков</th>
+            <th>Входящие</th>
+            <th>Исходящие</th>
+            <th>Общее время разговора</th>
+            <th>Среднее время разговора</th>
         </tr>
         </thead>
         <tbody>
-        {% for report in reports1 %}
+        {% for report in reports2 %}
         <tr>
-        <td>{{ report.calldate}}</td>
-        <td>{{ report.src }}</td>
-        <td>{{ report.dst }}</td>
-        <td>{{ report.duration }}</td>
-        <td>{{ report.billsec }}</td>
-        <td>
-            <audio controls>
-                <source src="" type="audio/mp3">
-                Ваш браузер не поддерживает элемент audio.
-            </audio>
+        <td><a href="/?oper={{ report.phone_number }}">{{ report.phone_number }}</a></td>
+        <td>{{ report.total_calls }}</td>
+        <td>{{ report.incoming_calls }}</td>
+        <td>{{ report.outgoing_calls }}</td>
+        <td>{{ report.total_duration }}</td>
+        <td>{{ report.average_duration }}
         </td>
             </tr>
         {% endfor %}
@@ -90,6 +83,6 @@
     </table>
     </div>
 </div>
-<script src="{{ url_for('static', path='/script.js') }}"></script>
+<script src="{{ url_for('static', path='/teamleader.js') }}"></script>
 </body>
 </html>

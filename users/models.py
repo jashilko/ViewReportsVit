@@ -19,6 +19,15 @@ class SiteUser(Base):
         return f"{self.__class__.__name__}(id={self.id})"
 
     def to_dict(self):
+        role = ''
+        if self.is_admin:
+            role = 'Админ'
+        elif self.is_controller:
+            role = 'Контролер'
+        elif self.is_teamlead:
+            role = 'Руководитель группы'
+        else:
+            role = 'Оператор'
         return {
             "id": self.id,
             "phone_number": self.phone_number,
@@ -26,7 +35,8 @@ class SiteUser(Base):
             "is_teamlead": self.is_teamlead,
             "is_controller": self.is_controller,
             "is_admin": self.is_admin,
-            "phone_teamleader": self.phone_teamleader
+            "phone_teamleader": self.phone_teamleader,
+            "role": role
         }
 
 class userman_users(Base):

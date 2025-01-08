@@ -40,8 +40,8 @@ def auth_user(response: Response, user_data: SUserAuth):
     return {'ok': True, 'access_token': access_token, 'refresh_token': None, 'message': 'Авторизация успешна!'}
 
 @router.get("/me/")
-def get_me(user_data: SUserAuth = Depends(get_current_user)):
-    return user_data
+def get_me(user_data = Depends(get_current_user)):
+    return user_data.to_dict()
 
 @router.post("/logout/")
 def logout_user(response: Response):
