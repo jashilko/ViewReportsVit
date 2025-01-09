@@ -1,3 +1,5 @@
+from sqlalchemy import distinct
+
 from base import BaseDAO
 from users.models import SiteUser, userman_users
 from database import session_maker
@@ -33,5 +35,20 @@ class UsersDAO(BaseDAO):
             return opers_data
 
 
+
+
 class UsersManDAO(BaseDAO):
     model = userman_users
+
+    @classmethod
+    def all_operator_list(cls):
+        with session_maker() as session:
+            # Создаем запрос с distinct
+            query = select(distinct(userman_users.username))
+
+            # Выполняем запрос
+            result = session.execute(query).scalars().all()
+
+            # Преобразуем данные в список
+            opers_list = [oper_phone for oper_phone in result]
+            return opers_list

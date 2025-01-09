@@ -12,9 +12,9 @@
 <header>
     <!-- Пункт меню слева -->
     <div class="menu">
-        <a href="/">Мои звонки</a>
+        <a href="/">Статистика оператора</a>
         {% if user.is_teamlead %}<a href="/teamleader">Статистика группы</a> {% endif %}
-        {% if user.is_controller %}<a href="/">Статистика всех</a>{% endif %}
+        {% if user.is_controller %}<a href="/all">Статистика всех</a>{% endif %}
         {% if user.is_admin %}<a href="/">Пользователи</a>{% endif %}
     </div>
 
