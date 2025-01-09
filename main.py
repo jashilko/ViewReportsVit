@@ -18,6 +18,11 @@ from reports.dao import CdrDAO
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
+app.mount(
+    "/audio",  # URL-часть маршрута должна начинаться с "/"
+    StaticFiles(directory=r"C:\Users\79168\Downloads\26\audio"),  # Абсолютный путь к папке с файлами
+    name="audio"
+)
 templates = Jinja2Templates(directory="public")
 app.include_router(router_cdr)
 app.include_router(router_users)
