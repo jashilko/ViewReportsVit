@@ -1,0 +1,18 @@
+<header>
+    <!-- Пункт меню слева -->
+    <div class="menu">
+        <a href="/">Статистика оператора</a>
+        {% if user.is_teamlead %}<a href="/teamleader">Статистика группы</a> {% endif %}
+        {% if user.is_controller %}<a href="/all">Статистика всех</a>{% endif %}
+        <a href="/users">Пользователи</a>
+    </div>
+
+    <!-- Заголовок по центру -->
+    <h1>Телефонные записи</h1>
+
+    <!-- Информация о пользователе и кнопка "Выйти" -->
+    <div class="user-info">
+        <span class="username">Пользователь:  {{user.phone_number}} ({{user.role}})</span>
+        <button type="submit" id="logout-button" class="submit-button" onclick="logoutFunction()">Выйти</button>
+    </div>
+</header>

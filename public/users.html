@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список пользователей</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/users.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/header.css') }}">
+</head>
+<body>
+    <!-- Шапка сайта -->
+    {% include 'header.html' %}
+
+    <!-- Основной контент -->
+    <div class="container">
+        <h1>Список пользователей</h1>
+
+        <!-- Форма для фильтрации -->
+<div class="filter">
+    <label for="filter-name">Поиск по имени:</label>
+    <input type="text" id="filter-name" placeholder="Введите имя...">
+    <label for="filter-phone">Поиск по номеру телефона:</label>
+    <input type="text" id="filter-phone" placeholder="Введите номер телефона...">
+    <label for="filter-role">Фильтр по ролям:</label>
+    <select id="filter-role">
+        <option value="">Все роли</option>
+        <option value="Оператор">Оператор</option>
+        <option value="Контроллер">Контроллер</option>
+        <option value="Руководитель">Руководитель</option>
+    </select>
+</div>
+
+
+        <!-- Список пользователей -->
+        <ul id="user-list">
+            <!-- Пример элемента -->
+            <li>
+                <div class="user-info2">
+                    <div>
+                        <span>Иван Иванов</span>
+                        <p>ivan.ivanov@example.com</p>
+                        <div class="role-select">
+                            <label for="roles">Роли:</label>
+                            <select id="roles" multiple>
+                                <option value="operator">Оператор</option>
+                                <option value="controller">Контроллер</option>
+                                <option value="manager">Руководитель</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <script src="{{ url_for('static', path='/users.js') }}"></script>
+    <script src="{{ url_for('static', path='/header.js') }}"></script>
+</body>
+</html>

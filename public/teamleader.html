@@ -5,27 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Список телефонных записей</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/header.css') }}">
 </head>
 <body>
 <!-- Шапка сайта -->
-<header>
-    <!-- Пункт меню слева -->
-    <div class="menu">
-        <a href="/">Статистика оператора</a>
-        {% if user.is_teamlead %}<a href="/teamleader">Статистика группы</a> {% endif %}
-        {% if user.is_controller %}<a href="/all">Статистика всех</a>{% endif %}
-        {% if user.is_admin %}<a href="/">Пользователи</a>{% endif %}
-    </div>
-
-    <!-- Заголовок по центру -->
-    <h1>Телефонные записи</h1>
-
-    <!-- Информация о пользователе и кнопка "Выйти" -->
-    <div class="user-info">
-        <span class="username">Пользователь:  {{user.phone_number}} ({{user.role}})</span>
-        <button type="submit" id="logout-button" class="submit-button" onclick="logoutFunction()">Выйти</button>
-    </div>
-</header>
+{% include 'header.html' %}
 <div class="container">
         {% if warning_flag != '' %}
         <div class="warning-panel">
@@ -84,5 +68,6 @@
     </div>
 </div>
 <script src="{{ url_for('static', path='/teamleader.js') }}"></script>
+<script src="{{ url_for('static', path='/header.js') }}"></script>
 </body>
 </html>

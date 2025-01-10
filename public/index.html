@@ -5,91 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Список телефонных записей</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/header.css') }}">
 </head>
 <body>
+
 <!-- Шапка сайта -->
-
-<header>
-    <!-- Пункт меню слева -->
-    <div class="menu">
-        <a href="/">Статистика оператора</a>
-        {% if user.is_teamlead %}<a href="/teamleader">Статистика группы</a> {% endif %}
-        {% if user.is_controller %}<a href="/all">Статистика всех</a>{% endif %}
-        {% if user.is_admin %}<a href="/">Пользователи</a>{% endif %}
-    </div>
-
-    <!-- Заголовок по центру -->
-    <h1>Телефонные записи</h1>
-
-    <!-- Информация о пользователе и кнопка "Выйти" -->
-    <div class="user-info">
-        <span class="username">Пользователь:  {{user.phone_number}} ({{user.role}})</span>
-        <button type="submit" id="logout-button" class="submit-button" onclick="logoutFunction()">Выйти</button>
-    </div>
-</header>
+{% include 'header.html' %}
 <div class="container">
-        {% if warning_flag != '' %}
-        <div class="warning-panel">
-            <p>Предупреждение: {{warning_flag}}</p>
-        </div>
-        {% endif %}
+    {% if warning_flag != '' %}
+    <div class="warning-panel">
+        <p>Предупреждение: {{warning_flag}}</p>
+    </div>
+    {% endif %}
 
-<div class="statistics">
-    <h2>Статистика звонков оператора {{filter.oper}} за выбранный период: </h2>
-    <ul>
-        <li>Общее количество звонков: {{ stats.total_calls }}</li>
-        <li>Количество входящих звонков: {{ stats.incoming_calls }}</li>
-        <li>Количество исходящих звонков: {{ stats.outgoing_calls }}</li>
-        <li>Общий трафик (секунды): {{ stats.total_billsec }}</li>
-        <li>Среднее время звонка (секунды): {{ "%.2f"|format(stats.average_call_duration) }}</li>
-    </ul>
-</div>
     <div class="statistics">
-    <h1>Список телефонных записей оператора {{filter.oper}}: </h1>
+        <h2>Статистика звонков оператора {{filter.oper}} за выбранный период: </h2>
+        <ul>
+            <li>Общее количество звонков: {{ stats.total_calls }}</li>
+            <li>Количество входящих звонков: {{ stats.incoming_calls }}</li>
+            <li>Количество исходящих звонков: {{ stats.outgoing_calls }}</li>
+            <li>Общий трафик (секунды): {{ stats.total_billsec }}</li>
+            <li>Среднее время звонка (секунды): {{ "%.2f"|format(stats.average_call_duration) }}</li>
+        </ul>
+    </div>
+    <div class="statistics">
+        <h1>Список телефонных записей оператора {{filter.oper}}: </h1>
 
-    <!-- Фильтры -->
-    <form id="filter-form" class="filter">
-        <label for="date_from">Начало: </label>
-        <input type="date" id="date_from" value={{ filter.date_from}}>
-        <label for="date_to">Конец: </label>
-        <input type="date" id="date_to" value={{ filter.date_to}}>
-        <label for="oper">Телефон: </label>
-        <input type="text" id="oper" placeholder="Введите номер" value={{ filter.oper}}>
-        <button id="filter-button" class="submit-button">Применить фильтры</button>
-    </form>
+        <!-- Фильтры -->
+        <form id="filter-form" class="filter">
+            <label for="date_from">Начало: </label>
+            <input type="date" id="date_from" value={{ filter.date_from}}>
+            <label for="date_to">Конец: </label>
+            <input type="date" id="date_to" value={{ filter.date_to}}>
+            <label for="oper">Телефон: </label>
+            <input type="text" id="oper" placeholder="Введите номер" value={{ filter.oper}}>
+            <button id="filter-button" class="submit-button">Применить фильтры</button>
+        </form>
 
-    <!-- Таблица с записями -->
-    <table id="recordings-table">
-        <thead>
-        <tr>
-            <th>Дата звонка</th>
-            <th>Кто звонил</th>
-            <th>Кому звонили</th>
-            <th>Общее время</th>
-            <th>Время разговора</th>
-            <th>Запись разговора</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for report in reports1 %}
-        <tr>
-        <td>{{ report.calldate}}</td>
-        <td>{{ report.src }}</td>
-        <td>{{ report.dst }}</td>
-        <td>{{ report.duration }}</td>
-        <td>{{ report.billsec }}</td>
-        <td>
-            <audio controls>
-                <source src="{{ url_for('audio', path=report.recordingfile) }}" type="audio/mp3">
-                Ваш браузер не поддерживает элемент audio.
-            </audio>
-        </td>
+        <!-- Таблица с записями -->
+        <table id="recordings-table">
+            <thead>
+            <tr>
+                <th>Дата звонка</th>
+                <th>Кто звонил</th>
+                <th>Кому звонили</th>
+                <th>Общее время</th>
+                <th>Время разговора</th>
+                <th>Запись разговора</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for report in reports1 %}
+            <tr>
+                <td>{{ report.calldate}}</td>
+                <td>{{ report.src }}</td>
+                <td>{{ report.dst }}</td>
+                <td>{{ report.duration }}</td>
+                <td>{{ report.billsec }}</td>
+                <td>
+                    <audio controls>
+                        <source src="{{ url_for('audio', path=report.recordingfile) }}" type="audio/mp3">
+                        Ваш браузер не поддерживает элемент audio.
+                    </audio>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 <script src="{{ url_for('static', path='/script.js') }}"></script>
+<script src="{{ url_for('static', path='/header.js') }}"></script>
 </body>
 </html>

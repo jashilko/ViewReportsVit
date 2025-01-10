@@ -12,7 +12,6 @@ from reports.router import router as router_cdr
 from users.router import router as router_users
 from reports.router import get_all_cdr, get_all_calls_by_oper, get_group_oper_stat
 from users.router import get_me, get_all_teamleader
-from pages.router import router as router_pages
 from reports.dao import CdrDAO
 
 
@@ -26,7 +25,6 @@ app.mount(
 templates = Jinja2Templates(directory="public")
 app.include_router(router_cdr)
 app.include_router(router_users)
-app.include_router(router_pages)
 
 
 @app.get("/register", summary="Registration Form", tags=['WebPages'])
@@ -123,4 +121,11 @@ def main(request: Request, reports=Depends(get_group_oper_stat), user=Depends(ge
                                                "stats": stats,
                                                'warning_flag': warning_flag,
                                                },
+                                      )
+
+@app.get("/users", summary="Page of users list", tags=['WebPages'])
+def get_users_list(request: Request, user=Depends(get_me)):
+    return templates.TemplateResponse(name="users.html",
+                                      context={'request': request,
+                                               'user': user},
                                       )

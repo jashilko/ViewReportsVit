@@ -1,0 +1,74 @@
+/* Стили для шапки */
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 0;
+    margin: 0 auto; /* Центрируем шапку */
+    display: flex;
+    justify-content: center; /* Центрируем заголовок */
+    align-items: center;
+    position: relative; /* Для позиционирования user-info */
+    box-sizing: border-box;
+    width: 100%; /* Ширина 100% от контейнера */
+    max-width: 80%; /* Совпадает с шириной .container */
+}
+
+/* Меню слева */
+.menu {
+    position: absolute;
+    left: 20px; /* Расположение слева */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Расстояние между пунктами меню */
+}
+
+.menu a {
+    padding: 8px 12px;
+    font-size: 14px;
+    text-decoration: none;
+    color: white;
+    background-color: #f44336; /* Красный для кнопки меню */
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.menu a:hover {
+    background-color: #e53935;
+}
+
+/* Заголовок по центру */
+header h1 {
+    font-size: 24px;
+    text-align: center;
+    margin: 0;
+    flex-grow: 1;
+}
+
+/* Информация о пользователе и кнопка "Выйти" справа */
+.user-info {
+    position: absolute;
+    right: 20px; /* Расположение справа */
+    display: flex;
+    align-items: center;
+}
+
+.username {
+    margin-right: 15px;
+    font-size: 16px;
+}
+
+button {
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    background-color: #f44336; /* Красный для кнопки logout */
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #e53935;
+}
