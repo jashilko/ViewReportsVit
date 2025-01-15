@@ -71,10 +71,6 @@ button#login-button:hover {
 }
 
 button#register-button {
-    background-color: #007BFF; /* Синий цвет для кнопки "Регистрация" */
+    background-color: #E6E6E6; /* Синий цвет для кнопки "Регистрация" */
     font-size: 16px; /* Унифицированный размер шрифта */
-}
-
-button#register-button:hover {
-    background-color: #0056b3; /* Более насыщенный синий при наведении */
 }

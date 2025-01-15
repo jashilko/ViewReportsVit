@@ -13,12 +13,16 @@
 
     <!-- Основной контент -->
     <div class="container">
+        <div class="imformation-panel">
+            <p>Список содержит пользователей, которые заведены в таблице siteuser. </p>
+        </div>
         <h1>Список пользователей</h1>
-
+        <!-- Кнопка регистрации пользователя -->
+        <div class="register-button">
+            <button onclick="window.location.href='/register'">Регистрация пользователя</button>
+        </div>
         <!-- Форма для фильтрации -->
 <div class="filter">
-    <label for="filter-name">Поиск по имени:</label>
-    <input type="text" id="filter-name" placeholder="Введите имя...">
     <label for="filter-phone">Поиск по номеру телефона:</label>
     <input type="text" id="filter-phone" placeholder="Введите номер телефона...">
     <label for="filter-role">Фильтр по ролям:</label>

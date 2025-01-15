@@ -2,14 +2,31 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from users.auth import get_password_hash, authenticate_user, create_access_token
 from fastapi.responses import Response
 from users.dao import UsersDAO, UsersManDAO
-from users.schemas import SUserRegister, SUserAuth
-from users.dependencies import get_current_user
+from users.schemas import SUserRegister, SUserAuth, SUser
+from users.dependencies import get_current_user, get_current_admin_user
 from fastapi.templating import Jinja2Templates
 
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
+def register_admin(password):
+    if not UsersDAO.find_one_or_none(**{'is_admin': True}):
+        user_dict = {}
+        user_dict['phone_number'] = '100'
+        user_dict['password'] = get_password_hash(password)
+        user_dict['is_admin'] = True
+        user_dict['phone_teamleader'] = '100'
+        UsersDAO.add(**user_dict)
+        print('Админ создан')
+    else:
+        print('Админ уже существует')
+
 @router.post("/register/")
-def register_user(user_data: SUserRegister) -> dict:
+def register_user(user_data: SUserRegister, user = Depends(get_current_user)) -> dict:
+    if not user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Недостаточно прав'
+        )
     user = UsersDAO.find_one_or_none(phone_number=user_data.phone_number)
     if user:
         raise HTTPException(
@@ -51,3 +68,7 @@ def logout_user(response: Response):
 @router.get("/all_operators", summary="Получить всех операторов")
 def get_all_teamleader() -> list():
     return UsersDAO.all_teamleader()
+
+@router.get("/all_users", summary="Get all users")
+def get_all_users() -> list[SUser]:
+    return UsersDAO.find_all()

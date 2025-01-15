@@ -1,31 +1,32 @@
-from fastapi import FastAPI, Request, Depends, Form
-from pydantic import BaseModel
-from typing import List, Optional
+from fastapi import FastAPI, Request, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
-import datetime
+from users.dao import UsersDAO
 
-from reports.model import CDR
-from reports.rb import RBCdr
 from reports.router import router as router_cdr
-from users.router import router as router_users
+from users.router import router as router_users, get_all_users, register_admin
 from reports.router import get_all_cdr, get_all_calls_by_oper, get_group_oper_stat
-from users.router import get_me, get_all_teamleader
-from reports.dao import CdrDAO
-
+from users.router import get_me, get_all_teamleader, register_user
+from database import create_table
+from users.models import SiteUser
+from users.schemas import SUserRegister
+from config import get_pass
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
 app.mount(
     "/audio",  # URL-часть маршрута должна начинаться с "/"
-    StaticFiles(directory=r"C:\Users\79168\Downloads\26\audio"),  # Абсолютный путь к папке с файлами
+    StaticFiles(directory='audio'),  # Абсолютный путь к папке с файлами
     name="audio"
 )
 templates = Jinja2Templates(directory="public")
 app.include_router(router_cdr)
 app.include_router(router_users)
 
+#Создадим таблицу пользователей
+create_table(SiteUser)
+register_admin(get_pass())
 
 @app.get("/register", summary="Registration Form", tags=['WebPages'])
 def login(request: Request, team_leaders=Depends(get_all_teamleader)):
@@ -125,6 +126,7 @@ def main(request: Request, reports=Depends(get_group_oper_stat), user=Depends(ge
 
 @app.get("/users", summary="Page of users list", tags=['WebPages'])
 def get_users_list(request: Request, user=Depends(get_me)):
+    user_list = get_all_users()
     return templates.TemplateResponse(name="users.html",
                                       context={'request': request,
                                                'user': user},

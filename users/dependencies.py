@@ -7,6 +7,7 @@ from starlette.responses import RedirectResponse
 from config import get_auth_data
 from users.dao import UsersDAO
 from users.schemas import SUserAuth
+from users.models import SiteUser
 
 
 def get_token(request: Request):
@@ -41,7 +42,7 @@ def get_current_user(token: str = Depends(get_token)):
 
     return user
 
-def get_current_admin_user(current_user: SUserAuth = Depends(get_current_user)):
+def get_current_admin_user(current_user: SiteUser = Depends(get_current_user)):
     if current_user.is_admin:
         return current_user
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Недостаточно прав!')

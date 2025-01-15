@@ -72,3 +72,15 @@ button:hover {
     text-align: center;
     margin-top: 15px;
 }
+/* Панель предупреждения */
+.imformation-panel {
+    background-color: #e6ffe6; /* Светло-красный фон */
+    border: 1px solid #ccffe1; /* Красная граница */
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #4CAF50; /* Темно-красный текст */
+    font-size: 14px;
+    font-weight: bold;
+}

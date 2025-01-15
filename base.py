@@ -7,7 +7,7 @@ class BaseDAO:
     @classmethod
     def find_all(cls, **filter_by):
         with session_maker() as session:
-            query = select(cls.model).filter_by(**filter_by).limit(100)
+            query = select(cls.model).filter_by(**filter_by)
             result = session.execute(query)
             return result.scalars().all()
 

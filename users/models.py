@@ -1,18 +1,18 @@
-from sqlalchemy import text
+from sqlalchemy import text, MetaData, String
 from sqlalchemy.orm import Mapped, mapped_column
 from database import Base, str_uniq, int_pk
 
 
 class SiteUser(Base):
     id: Mapped[int_pk]
-    phone_number: Mapped[str_uniq]
-    password: Mapped[str]
+    phone_number: Mapped[str] = mapped_column(String(45))  # Максимум 64 символа
+    password: Mapped[str] = mapped_column(String(100))  # Максимум 100 символа
 
     is_operator: Mapped[bool] = mapped_column(default=True, server_default=text('true'), nullable=False)
     is_teamlead: Mapped[bool] = mapped_column(default=False, server_default=text('false'), nullable=False)
     is_controller: Mapped[bool] = mapped_column(default=False, server_default=text('false'), nullable=False)
     is_admin: Mapped[bool] = mapped_column(default=False, server_default=text('false'), nullable=False)
-    phone_teamleader: Mapped[str]
+    phone_teamleader: Mapped[str] = mapped_column(String(45))  # Максимум 64 символа
     extend_existing = True
 
     def __repr__(self):

@@ -10,7 +10,9 @@
 
     <div class="login-container">
         <h2>Регистрация в системе</h2>
-
+        <div class="imformation-panel">
+            <p>Сначала завести руководителей групп </p>
+        </div>
         <form id="login-form">
             <div class="form-group">
                 <label for="phone_number">Телефон</label>
@@ -18,11 +20,11 @@
             </div>
             <div class="form-group">
                 <label for="password">Пароль</label>
-                <input type="password" id="password" name="password" required placeholder="Введите пароль">
+                <input type="password" id="password" name="password" required placeholder="Введите пароль" minlength="5">
             </div>
             <div class="form-group">
                 <label for="confirm_password">Повторите пароль</label>
-                <input type="password" id="confirm_password" name="confirm_password" required placeholder="Повторите пароль">
+                <input type="password" id="confirm_password" name="confirm_password" required placeholder="Повторите пароль" minlength="5">
             </div>
             <div class="form-group checkbox-group">
                 <input type="checkbox" id="is_teamlead" name="is_teamlead">

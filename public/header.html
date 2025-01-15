@@ -4,7 +4,7 @@
         <a href="/">Статистика оператора</a>
         {% if user.is_teamlead %}<a href="/teamleader">Статистика группы</a> {% endif %}
         {% if user.is_controller %}<a href="/all">Статистика всех</a>{% endif %}
-        <a href="/users">Пользователи</a>
+        {% if user.is_admin %}<a href="/users">Пользователи</a>{% endif %}
     </div>
 
     <!-- Заголовок по центру -->

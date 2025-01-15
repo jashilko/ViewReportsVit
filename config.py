@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     DB_PASSWORD: str
     SECRET_KEY: str
     ALGORITHM: str
+    START_PASS: str
     model_config = SettingsConfigDict(
         env_file='.env'
     )
@@ -23,3 +24,6 @@ def get_db_url():
 
 def get_auth_data():
     return {"secret_key": settings.SECRET_KEY, "algorithm": settings.ALGORITHM}
+
+def get_pass():
+    return settings.START_PASS

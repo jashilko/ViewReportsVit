@@ -52,7 +52,7 @@ loginForm.addEventListener('submit', async function (event) {
         // Проверяем успешность запроса
         if (response.ok) {
             // Если запрос успешен, редиректим пользователя на другую страницу
-            window.location.href = '/login';  // Пример редиректа
+            window.location.href = '/users';  // Пример редиректа
         } else {
             // Если ошибка (например, неверные данные), показываем сообщение
             const errorData = await response.json();

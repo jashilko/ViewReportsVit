@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, EmailStr, Field, validator
 import re
 
@@ -16,3 +18,10 @@ class SUserAuth(BaseModel):
 class SUserInfo():
     phone_number: str = Field(..., description="Номер телефона")
     role: str = Field(..., description="Роль")
+
+class SUser(BaseModel):
+    phone_number: str = Field(..., description="Номер телефона")
+    is_operator: bool = Field(False, description="Является оператором")
+    is_teamlead: bool = Field(False, description="Является руководителем группы")
+    is_controller: bool = Field(False, description="Является контроллером")
+    phone_teamleader: Optional[str] = Field("", description="Телефон руководителя")

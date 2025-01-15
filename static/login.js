@@ -3,7 +3,7 @@ const loginForm = document.getElementById('login-form');
 const errorMessage = document.getElementById('error-message');
 
 function openRegister() {
-    window.location.href = '/register';
+   alert('Обратитесь к администратору для регистрации пользователя');
 }
 
 // Обработчик отправки формы
