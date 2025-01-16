@@ -8,11 +8,11 @@ from fastapi.templating import Jinja2Templates
 
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
-def register_admin(password):
+def register_admin(cred):
     if not UsersDAO.find_one_or_none(**{'is_admin': True}):
         user_dict = {}
-        user_dict['phone_number'] = '100'
-        user_dict['password'] = get_password_hash(password)
+        user_dict['phone_number'] = cred['login']
+        user_dict['password'] = get_password_hash(cred['pass'])
         user_dict['is_admin'] = True
         user_dict['phone_teamleader'] = '100'
         UsersDAO.add(**user_dict)
