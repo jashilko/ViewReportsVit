@@ -1,6 +1,7 @@
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.future import select
 from database import session_maker
+from sqlalchemy import update as sqlalchemy_update
 
 class BaseDAO:
     model = None

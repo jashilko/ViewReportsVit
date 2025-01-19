@@ -1,4 +1,4 @@
-from sqlalchemy import distinct
+from sqlalchemy import distinct, update
 
 from base import BaseDAO
 from users.models import SiteUser, userman_users
@@ -8,6 +8,23 @@ from sqlalchemy.future import select
 
 class UsersDAO(BaseDAO):
     model = SiteUser
+
+    @classmethod
+    def update_password(cls, phone_num: str, new_pass: str):
+        with session_maker() as session:  # Использование контекста для сессии
+            try:
+                # Находим пользователя с указанным номером телефона
+                user = session.query(SiteUser).filter_by(phone_number=phone_num).first()
+                if not user:
+                    raise ValueError(f"Пользователь с номером {phone_num} не найден.")
+
+                # Обновляем пароль пользователя
+                user.password = new_pass  # Прямое изменение свойства
+                session.commit()  # Сохраняем изменения
+            except Exception as e:
+                session.rollback()  # Откатываем изменения в случае ошибки
+                raise e
+
 
     @classmethod
     def all_teamleader(cls):
@@ -34,7 +51,39 @@ class UsersDAO(BaseDAO):
                 opers_data.append(oper_phone)
             return opers_data
 
+    @classmethod
+    def update_leader(cls, phone_number, new_leader):
+        with session_maker() as session:  # Использование контекста для сессии
+            try:
+                # Находим пользователя с указанным номером телефона
+                user = session.query(SiteUser).filter_by(phone_number=phone_number).first()
+                if not user:
+                    raise ValueError(f"Пользователь с номером {phone_number} не найден.")
 
+                # Обновляем лидера пользователя
+                user.phone_teamleader = new_leader  # Прямое изменение свойства
+                session.commit()  # Сохраняем изменения
+            except Exception as e:
+                session.rollback()  # Откатываем изменения в случае ошибки
+                raise e
+
+    @classmethod
+    def update_roles(cls, phone_number, roles):
+        with session_maker() as session:  # Использование контекста для сессии
+            try:
+                # Находим пользователя с указанным номером телефона
+                user = session.query(SiteUser).filter_by(phone_number=phone_number).first()
+                if not user:
+                    raise ValueError(f"Пользователь с номером {phone_number} не найден.")
+
+                # Обновляем роли пользователя
+                user.is_operator = True if "Оператор" in roles else False
+                user.is_teamlead = True if "Руководитель" in roles else False
+                user.is_controller = True if "Контроллер" in roles else False
+                session.commit()  # Сохраняем изменения
+            except Exception as e:
+                session.rollback()  # Откатываем изменения в случае ошибки
+                raise e
 
 
 class UsersManDAO(BaseDAO):

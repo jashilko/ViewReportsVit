@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr, Field, validator
 import re
@@ -14,6 +14,14 @@ class SUserRegister(BaseModel):
 class SUserAuth(BaseModel):
     phone_number:str = Field(..., description="Номер телефона")
     password: str = Field(..., min_length=5, max_length=50, description="Пароль, от 5 до 50 знаков")
+
+class SLeaderChange(BaseModel):
+    phone_number:str = Field(..., description="Номер телефона")
+    new_leader: str = Field("", description="Телефон руководителя")
+
+class SNewRoles(BaseModel):
+    phone_number: str = Field(..., description="Номер телефона")
+    roles: List[str] = Field(..., description="Список новых ролей пользователя")
 
 class SUserInfo():
     phone_number: str = Field(..., description="Номер телефона")

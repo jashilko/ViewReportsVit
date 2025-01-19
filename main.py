@@ -45,6 +45,7 @@ def login(request: Request):
 @app.get("/", summary="Page of one operator", tags=['WebPages'])
 def main(request: Request, reports=Depends(get_all_calls_by_oper), user = Depends(get_me)):
     filter_conditions = reports['req']
+    print(filter_conditions)
     filtered_reports = reports['res']
     total_calls = len(filtered_reports)
     incoming_calls = len([r for r in filtered_reports if r["dst"] == user['phone_number']])
@@ -125,9 +126,10 @@ def main(request: Request, reports=Depends(get_group_oper_stat), user=Depends(ge
                                       )
 
 @app.get("/users", summary="Page of users list", tags=['WebPages'])
-def get_users_list(request: Request, user=Depends(get_me)):
+def get_users_list(request: Request, user=Depends(get_me), team_leaders=Depends(get_all_teamleader)):
     user_list = get_all_users()
     return templates.TemplateResponse(name="users.html",
                                       context={'request': request,
-                                               'user': user},
+                                               'user': user,
+                                               "group_leader_phones": team_leaders},
                                       )

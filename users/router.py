@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from users.auth import get_password_hash, authenticate_user, create_access_token
 from fastapi.responses import Response
 from users.dao import UsersDAO, UsersManDAO
-from users.schemas import SUserRegister, SUserAuth, SUser
-from users.dependencies import get_current_user, get_current_admin_user
+from users.schemas import SUserRegister, SUserAuth, SUser, SLeaderChange, SNewRoles
+from users.dependencies import get_current_user
 from fastapi.templating import Jinja2Templates
 
 router = APIRouter(prefix='/auth', tags=['Auth'])
@@ -72,3 +72,34 @@ def get_all_teamleader() -> list():
 @router.get("/all_users", summary="Get all users")
 def get_all_users() -> list[SUser]:
     return UsersDAO.find_all()
+
+@router.post("/change-password", summary="Set new password")
+def post_change_password(new_pass: SUserAuth, user = Depends(get_current_user)):
+    if not user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Недостаточно прав'
+        )
+    hash_new_pass = get_password_hash(new_pass.password)
+    UsersDAO.update_password(new_pass.phone_number, hash_new_pass)
+    return {'ok': True}
+
+@router.post("/change-leader", summary="Set new leader")
+def post_change_leader(new_lead: SLeaderChange, user = Depends(get_current_user)):
+    if not user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Недостаточно прав'
+        )
+    UsersDAO.update_leader(new_lead.phone_number, new_lead.new_leader)
+    return {'ok': True}
+
+@router.post("/change-roles", summary="Set new roles")
+def post_change_leader(new_roles: SNewRoles, user = Depends(get_current_user)):
+    if not user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Недостаточно прав'
+        )
+    UsersDAO.update_roles(new_roles.phone_number, new_roles.roles)
+    return {'ok': True}
