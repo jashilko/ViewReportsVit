@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     ADMIN_LOGIN: str
     START_PASS: str
     CONN_STR: str
+    IS_PROM: str
     model_config = SettingsConfigDict(
         env_file='.env'
     )
@@ -21,8 +22,11 @@ settings = Settings()
 
 
 def get_db_url():
-    return (f"mysql+pymysql://{settings.DB_USER}:{settings.DB_PASSWORD}@"
-            f"{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}")
+    if settings.IS_PROM == 'Y':
+        return settings.CONN_STR
+    else:
+        return (f"mysql+pymysql://{settings.DB_USER}:{settings.DB_PASSWORD}@"
+                f"{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}")
 
 
 def get_auth_data():
