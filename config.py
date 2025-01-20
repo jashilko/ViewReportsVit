@@ -22,11 +22,8 @@ settings = Settings()
 
 
 def get_db_url():
-    if settings.IS_PROM == 'Y':
-        return settings.CONN_STR
-    else:
-        return (f"mysql+pymysql://{settings.DB_USER}:{settings.DB_PASSWORD}@"
-                f"{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}")
+    print(settings.CONN_STR)
+    return settings.CONN_STR
 
 
 def get_auth_data():
