@@ -34,13 +34,13 @@ def register_user(user_data: SUserRegister, user = Depends(get_current_user)) ->
             detail='Пользователь уже существует'
         )
 
-    # Проверяем наличие телефона в БД
-    phone_exists = UsersManDAO.find_one_or_none(username=user_data.phone_number)
-    if not phone_exists:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail='Несуществующий телефон'
-        )
+    # # Проверяем наличие телефона в БД
+    # phone_exists = UsersManDAO.find_one_or_none(username=user_data.phone_number)
+    # if not phone_exists:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    #         detail='Несуществующий телефон'
+    #     )
     user_dict = user_data.dict()
     user_dict['password'] = get_password_hash(user_data.password)
     UsersDAO.add(**user_dict)
