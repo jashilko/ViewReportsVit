@@ -6,7 +6,8 @@ from config import get_db_url
 from typing import Annotated
 
 DATABASE_URL = get_db_url()
-engine = create_engine(DATABASE_URL)
+print('hello')
+engine = create_engine("mysql+pymysql://user:Kostya!23@91.201.40.80:3306/db-vit")
 session_maker = sessionmaker(engine, expire_on_commit=False)
 
 
