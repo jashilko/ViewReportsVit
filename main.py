@@ -8,7 +8,7 @@ from reports.router import get_all_cdr, get_all_calls_by_oper, get_group_oper_st
 from users.router import get_me, get_all_teamleader
 from database import create_table
 from users.models import SiteUser
-from config import get_pass, get_api_url
+from config import get_pass
 from  reports.statistic import Statistic
 
 
