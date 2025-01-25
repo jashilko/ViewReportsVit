@@ -4,12 +4,18 @@ from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.orm import DeclarativeBase, declared_attr, mapped_column
 from config import get_db_url
 from typing import Annotated
+from sqlalchemy.exc import OperationalError
 
 DATABASE_URL = get_db_url()
-print('hello')
-engine = create_engine("mysql+pymysql://user:Kostya!23@91.201.40.80:3306/db-vit")
+try:
+    engine = create_engine(DATABASE_URL)
+    connection = engine.connect()
+    print("Connection successful!")
+except OperationalError as e:
+    print(f"OperationalError: {e}")
+except Exception as e:
+    print(f"Unexpected error: {e}")
 session_maker = sessionmaker(engine, expire_on_commit=False)
-
 
 # настройка аннотаций
 int_pk = Annotated[int, mapped_column(primary_key=True)]

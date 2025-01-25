@@ -3,17 +3,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    DB_HOST: str
-    DB_PORT: int
-    DB_NAME: str
-    DB_USER: str
-    DB_PASSWORD: str
     SECRET_KEY: str
     ALGORITHM: str
     ADMIN_LOGIN: str
     START_PASS: str
     CONN_STR: str
-    IS_PROM: str
+    AUDIO_PATH: str
+    FILTER_MINUS_DAYS_FROM: int
     model_config = SettingsConfigDict(
         env_file='.env'
     )
@@ -22,7 +18,6 @@ settings = Settings()
 
 
 def get_db_url():
-    print(settings.CONN_STR)
     return settings.CONN_STR
 
 
@@ -31,3 +26,10 @@ def get_auth_data():
 
 def get_pass():
     return {"login": settings.ADMIN_LOGIN, "pass": settings.START_PASS}
+
+def get_audio_path():
+    return settings.AUDIO_PATH
+
+def get_filter_minus_days_from() -> int:
+    return settings.FILTER_MINUS_DAYS_FROM
+

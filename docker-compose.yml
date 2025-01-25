@@ -4,9 +4,7 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8080 --reload
     volumes:
       - .:/app
+      - ${AUDIO_PATH}:/audio
     ports:
       - "8080:8080"
-
-networks:
-  default:
-    driver: bridge
+    network_mode: "host"

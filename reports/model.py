@@ -20,5 +20,5 @@ class CDR(Base):
             "duration": self.duration,
             "billsec": self.billsec,
             "disposition": self.disposition,
-            "recordingfile": self.recordingfile,
+            "recordingfile": f"{self.calldate.strftime('%Y/%m/%d')}/{self.recordingfile}",
         }
