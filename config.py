@@ -27,8 +27,8 @@ def get_auth_data():
 def get_pass():
     return {"login": settings.ADMIN_LOGIN, "pass": settings.START_PASS}
 
-def get_audio_path():
-    return settings.AUDIO_PATH
+# def get_audio_path():
+#     return settings.AUDIO_PATH
 
 def get_filter_minus_days_from() -> int:
     return settings.FILTER_MINUS_DAYS_FROM

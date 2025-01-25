@@ -11,14 +11,14 @@ from users.router import get_me, get_all_teamleader, register_user
 from database import create_table
 from users.models import SiteUser
 from users.schemas import SUserRegister
-from config import get_pass, get_audio_path
+from config import get_pass
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
-audio_path = str(get_audio_path())
+# audio_path = str(get_audio_path())
 app.mount(
     "/audio",  # URL-часть маршрута должна начинаться с "/"
-    StaticFiles(directory=audio_path, html=True),  # Абсолютный путь к папке с файлами
+    StaticFiles(directory='./audio', html=True),  # Абсолютный путь к папке с файлами
     name="audio"
 )
 templates = Jinja2Templates(directory="public")
