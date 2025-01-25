@@ -47,7 +47,7 @@ def login(request: Request):
 def main(request: Request, reports=Depends(get_all_calls_by_oper), user = Depends(get_me)):
     filter_conditions = reports['req']
     filtered_reports = reports['res']
-    stats = Statistic(list_of_records=filtered_reports, phone=user['phone_number']).get_user_stat()
+    stats = Statistic(list_of_records=filtered_reports, phone=filter_conditions['oper']).get_user_stat()
     warning_flag = reports['warning']
     return templates.TemplateResponse(name="index.html",
                                       context={'request': request,
