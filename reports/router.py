@@ -28,7 +28,15 @@ def get_all_calls_by_oper(request_body: RBCdr = Depends(), user_data = Depends(g
     if 'date_from' in request_body.to_dict():
         pass
     else:
-        request_body.date_from = (datetime.datetime.now() - datetime.timedelta(days=get_filter_minus_days_from())).strftime('%Y-%m-%dT%H:%M')
+        request_body.date_from = ((datetime.datetime.now() - datetime.timedelta(days=get_filter_minus_days_from()))
+                                  .replace(hour=0, minute=0, second=0)
+                                  .strftime('%Y-%m-%dT%H:%M'))
+    if 'date_to' in request_body.to_dict():
+        pass
+    else:
+        request_body.date_to = (datetime.datetime.now()
+                                  .replace(hour=23, minute=59, second=59, microsecond=0)
+                                  .strftime('%Y-%m-%dT%H:%M'))
     return {'req': request_body.to_dict(), 'res': CdrDAO.find_cdr_byoper(request_body.to_dict()), 'warning': ""}
 
 @router.get("/oper_stat", summary="Get one operator statistics")
@@ -50,8 +58,15 @@ def get_group_oper_stat(request_body: RBCdr = Depends(), user_data = Depends(get
     if 'date_from' in request_body.to_dict():
         pass
     else:
-        request_body.date_from = (datetime.datetime.now() - datetime.timedelta(days=get_filter_minus_days_from())).strftime('%Y-%m-%dT%H:%M')
-
+        request_body.date_from = ((datetime.datetime.now() - datetime.timedelta(days=get_filter_minus_days_from()))
+                                  .replace(hour=0, minute=0, second=0)
+                                  .strftime('%Y-%m-%dT%H:%M'))
+    if 'date_to' in request_body.to_dict():
+        pass
+    else:
+        request_body.date_to = (datetime.datetime.now()
+                                  .replace(hour=23, minute=59, second=59, microsecond=0)
+                                  .strftime('%Y-%m-%dT%H:%M'))
     # Цикл по каждому
     users_dict = []
     for user in users_list:

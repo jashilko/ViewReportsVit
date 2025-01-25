@@ -6,6 +6,8 @@
     <title>Список телефонных записей</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/header.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -21,11 +23,16 @@
     <div class="statistics">
         <h2>Статистика звонков оператора {{filter.oper}} за выбранный период: </h2>
         <ul>
-            <li>Общее количество звонков: {{ stats.total_calls }}</li>
-            <li>Количество входящих звонков: {{ stats.incoming_calls }}</li>
-            <li>Количество исходящих звонков: {{ stats.outgoing_calls }}</li>
-            <li>Общий трафик (секунды): {{ stats.total_billsec }}</li>
-            <li>Среднее время звонка (секунды): {{ "%.2f"|format(stats.average_call_duration) }}</li>
+            <li title="И с разговором и без">Общее количество звонков: {{ stats.total_calls }}</li>
+            <li title="И с разговором и без">Количество входящих звонков: {{ stats.incoming_calls }}</li>
+            <li title="И с разговором и без">Количество исходящих звонков: {{ stats.outgoing_calls }}</li>
+            <li title="И с разговором и без">Количество звонков с разговором: {{ stats.calls_with_duration_count }}</li>
+            <li title="Именно разговора, без учета ожидания">
+                Общее время разговора: {{ stats.total_billsec }}
+            </li>
+            <li title="Среднее время разговора вычисляется как Общее время разговора (выше), делённое на количество звонков с разговором > 0 секунд">
+                Среднее время разговора: {{ stats.average_call_duration }}
+            </li>
         </ul>
     </div>
     <div class="statistics">
@@ -46,10 +53,11 @@
         <table id="recordings-table">
             <thead>
             <tr>
+                <th></th>
                 <th>Дата звонка</th>
                 <th>Кто звонил</th>
                 <th>Кому звонили</th>
-                <th>Общее время</th>
+                <th>Всё время</th>
                 <th>Время разговора</th>
                 <th>Запись разговора</th>
             </tr>
@@ -57,11 +65,26 @@
             <tbody>
             {% for report in reports1 %}
             <tr>
+                            <td>
+                {% if report.src == filter.oper %}
+                    <i class="fa fa-arrow-up" style="color: green;" title="Исходящий звонок"></i>
+                {% else %}
+                    <i class="fa fa-arrow-down" style="color: red;" title="Входящий звонок"></i>
+                {% endif %}
+            </td>
                 <td>{{ report.calldate}}</td>
                 <td>{{ report.src }}</td>
                 <td>{{ report.dst }}</td>
-                <td>{{ report.duration }}</td>
-                <td>{{ report.billsec }}</td>
+                <td>
+                    {% set seconds = report.duration %}
+                    {% if (seconds % 3600) // 60 < 10 %}0{% endif %}{{ (seconds % 3600) // 60
+                    }}:{% if seconds % 60 < 10 %}0{% endif %}{{ seconds % 60 }}
+                </td>
+                <td>
+                    {% set seconds = report.billsec %}
+                    {% if (seconds % 3600) // 60 < 10 %}0{% endif %}{{ (seconds % 3600) // 60
+                    }}:{% if seconds % 60 < 10 %}0{% endif %}{{ seconds % 60 }}
+                </td>
                 <td>
                     <audio controls>
                         <source src="{{ url_for('audio', path=report.recordingfile) }}" type="audio/mp3">

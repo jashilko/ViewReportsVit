@@ -11,24 +11,28 @@
 <!-- Шапка сайта -->
 {% include 'header.html' %}
 <div class="container">
-        {% if warning_flag != '' %}
-        <div class="warning-panel">
-            <p>Предупреждение: {{warning_flag}}</p>
-        </div>
-        {% endif %}
+    {% if warning_flag != '' %}
+    <div class="warning-panel">
+        <p>Предупреждение: {{warning_flag}}</p>
+    </div>
+    {% endif %}
 
-<div class="statistics">
-    <h2>Статистика группы {{user.phone_number}} за выбранный период: </h2>
-    <ul>
-        <li>Общее количество звонков: {{ stats.total_calls }}</li>
-        <li>Количество входящих звонков: {{ stats.incoming_calls }}</li>
-        <li>Количество исходящих звонков: {{ stats.outgoing_calls }}</li>
-        <li>Общий трафик (секунды): {{ stats.total_billsec }}</li>
-        <li>Среднее время звонка (секунды): {{ "%.2f"|format(stats.average_call_duration) }}</li>
-    </ul>
-</div>
     <div class="statistics">
-    <h1>Список группы {{user.phone_number}}: </h1>
+        <h2>Статистика группы {{user.phone_number}} за выбранный период: </h2>
+        <ul>
+            <li title="И с разговором и без">Общее количество звонков: {{ stats.total_calls }}</li>
+            <li title="И с разговором и без">Количество входящих звонков: {{ stats.incoming_calls }}</li>
+            <li title="И с разговором и без">Количество исходящих звонков: {{ stats.outgoing_calls }}</li>
+            <li title="Именно разговора, без учета ожидания">
+                Общее время разговора: {{ stats.total_billsec }}
+            </li>
+            <li title="Среднее время разговора вычисляется как Общее время разговора (выше), делённое на количество звонков с разговором > 0 секунд">
+                Среднее время разговора: {{ stats.average_call_duration }}
+            </li>
+        </ul>
+    </div>
+    <div class="statistics">
+        <h1>Список группы {{user.phone_number}}: </h1>
 
     <!-- Фильтры -->
     <form id="filter-form" class="filter">
