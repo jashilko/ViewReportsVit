@@ -62,6 +62,7 @@
                 <th>Всё время</th>
                 <th>Время разговора</th>
                 <th>Запись разговора</th>
+                <th>Ссылка на запись</th>
             </tr>
             </thead>
             <tbody>
@@ -93,6 +94,12 @@
                         Ваш браузер не поддерживает элемент audio.
                     </audio>
                 </td>
+                <td>
+                    <a href="#" class="copy-link" data-url="{{ url_for('audio', path=report.recordingfile) }}">
+                        Скопировать в буфер
+                    </a>
+                </td>
+
             </tr>
             {% endfor %}
             </tbody>

@@ -30,5 +30,22 @@ document.getElementById("phone-filter").addEventListener("input", function () {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".copy-link").forEach(link => {
+        link.addEventListener("click", function (event) {
+            event.preventDefault(); // Предотвращаем переход по ссылке
+
+            let url = this.getAttribute("data-url");
+
+            // Копируем URL в буфер обмена
+            navigator.clipboard.writeText(url).then(() => {
+                alert("Ссылка скопирована: " + url);
+            }).catch(err => {
+                console.error("Ошибка копирования: ", err);
+            });
+        });
+    });
+});
+
 // Загружаем список записей при загрузке страницы
 //window.onload = () => displayRecordings(recordings);
