@@ -2,7 +2,7 @@ from reports.model import CDR
 from base import BaseDAO
 from sqlalchemy.future import select
 from database import session_maker
-from sqlalchemy import and_, or_, func, case
+from sqlalchemy import and_, or_, func, case, desc
 from reports.model import CDR
 
 class CdrDAO(BaseDAO):
@@ -23,10 +23,11 @@ class CdrDAO(BaseDAO):
             return cdr_data
 
     def find_cdr_byoper(conditions):
-        with session_maker() as session:
+        with (session_maker() as session):
             query = select(CDR).where(CDR.calldate >= conditions['date_from'] if 'date_from' in conditions else 1==1,
                                       CDR.calldate <= conditions['date_to'] if 'date_to' in conditions else 1==1,
-                                      or_(CDR.src == conditions['oper'], CDR.dst == conditions['oper']) if 'oper' in conditions else 1==1)
+                                      or_(CDR.src == conditions['oper'], CDR.dst == conditions['oper']) if 'oper' in conditions else 1==1
+                                      ).order_by(desc(CDR.calldate))
             result = session.execute(query)
             cdr_info = result.scalars().all()
 

@@ -46,11 +46,13 @@
             <input type="datetime-local" id="date_to" value="{{ filter.date_to }}">
             <label for="oper">Телефон: </label>
             <input type="text" id="oper" placeholder="Введите номер" value={{ filter.oper}}>
-            <button id="filter-button" class="submit-button">Применить фильтры</button>
+            <button id="filter-button" class="submit-button">Поиск</button>
         </form>
-
+        <label for="phone-filter">Фильтр по номеру телефона в таблице ниже:</label>
+        <input type="text" id="phone-filter" placeholder="Введите номер">
         <!-- Таблица с записями -->
         <table id="recordings-table">
+
             <thead>
             <tr>
                 <th></th>
