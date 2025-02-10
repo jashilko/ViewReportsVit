@@ -47,5 +47,30 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+document.addEventListener("DOMContentLoaded", async () => {
+    const operSelect = document.getElementById("oper");
+
+    try {
+        const response = await fetch("/auth/all_operators_name"); // Запрос на сервер
+        const operators = await response.json(); // Преобразуем JSON
+
+        // Заполняем select опциями
+        Object.entries(operators).forEach(([key, value]) => {
+            const option = document.createElement("option");
+            option.value = key;
+            option.textContent = `${key} - ${value}`;
+            operSelect.appendChild(option);
+        });
+
+        // Устанавливаем сохраненное значение (если есть)
+        const selectedOper = new URLSearchParams(window.location.search).get("oper");
+        if (selectedOper) {
+            operSelect.value = selectedOper;
+        }
+    } catch (error) {
+        console.error("Ошибка загрузки списка операторов:", error);
+    }
+});
+
 // Загружаем список записей при загрузке страницы
 //window.onload = () => displayRecordings(recordings);

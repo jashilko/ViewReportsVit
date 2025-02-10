@@ -45,7 +45,9 @@
             <label for="date_to">Конец: </label>
             <input type="datetime-local" id="date_to" value="{{ filter.date_to }}">
             <label for="oper">Телефон: </label>
-            <input type="text" id="oper" placeholder="Введите номер" value={{ filter.oper}}>
+            <select id="oper">
+                <option value="">Выберите оператора</option>
+            </select>
             <button id="filter-button" class="submit-button">Поиск</button>
         </form>
         <label for="phone-filter">Фильтр по номеру телефона в таблице ниже:</label>

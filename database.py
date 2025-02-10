@@ -2,11 +2,12 @@
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.orm import DeclarativeBase, declared_attr, mapped_column
-from config import get_db_url
+from config import get_db_url, get_db_asterisk_url
 from typing import Annotated
 from sqlalchemy.exc import OperationalError
 
 DATABASE_URL = get_db_url()
+DATABASE_URL_ASTERISK = get_db_asterisk_url()
 try:
     engine = create_engine(DATABASE_URL)
     connection = engine.connect()
@@ -16,6 +17,16 @@ except OperationalError as e:
 except Exception as e:
     print(f"Unexpected error: {e}")
 session_maker = sessionmaker(engine, expire_on_commit=False)
+
+try:
+    engine_asterisk = create_engine(DATABASE_URL_ASTERISK)
+    connection_asterisk = engine_asterisk.connect()
+    print("Connection asterisk successful!")
+except OperationalError as e:
+    print(f"OperationalError: {e}")
+except Exception as e:
+    print(f"Unexpected error: {e}")
+session_maker_asterisk = sessionmaker(engine_asterisk, expire_on_commit=False)
 
 # настройка аннотаций
 int_pk = Annotated[int, mapped_column(primary_key=True)]

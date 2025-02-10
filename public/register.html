@@ -14,10 +14,16 @@
             <p>Сначала завести руководителей групп </p>
         </div>
         <form id="login-form">
+
             <div class="form-group">
-                <label for="phone_number">Телефон</label>
-                <input type="tel" id="phone_number" name="phone_number" required placeholder="Введите номер телефона">
-            </div>
+    <label for="phone_number">Телефон</label>
+    <select id="phone_number" name="phone_number" required>
+        <option value="">-- Выберите номер --</option>
+        {% for phone, name in users.items() %}
+            <option value="{{ phone }}">{{ phone }} - {{ name }}</option>
+        {% endfor %}
+    </select>
+</div>
             <div class="form-group">
                 <label for="password">Пароль</label>
                 <input type="password" id="password" name="password" required placeholder="Введите пароль" minlength="5">
@@ -36,11 +42,11 @@
             </div>
             <div class="form-group">
                 <label for="group_leader">Ваш руководитель</label>
-                <select id="group_leader" name="group_leader">
-                    {% for phone in group_leader_phones %}
-                        <option value="{{ phone }}">{{ phone }}</option>
-                    {% endfor %}
-                </select>
+<select id="group_leader" name="group_leader">
+    {% for phone, name in group_leader_phones.items() %}
+        <option value="{{ phone }}">{{ phone }} - {{ name }}</option>
+    {% endfor %}
+</select>
             </div>
             <button type="submit" id="login-button">Зарегистрировать</button>
         </form>

@@ -3,13 +3,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 from reports.router import router as router_cdr
-from users.router import router as router_users, get_all_users, register_admin
+from users.router import router as router_users, get_all_users, register_admin, get_operators_name
 from reports.router import get_all_cdr, get_all_calls_by_oper, get_group_oper_stat
 from users.router import get_me, get_all_teamleader
 from database import create_table
 from users.models import SiteUser
 from config import get_pass
 from  reports.statistic import Statistic
+from users.router import UsersNameDAO
 
 
 app = FastAPI()
@@ -30,9 +31,11 @@ create_table(SiteUser)
 register_admin(get_pass())
 
 @app.get("/register", summary="Registration Form", tags=['WebPages'])
-def login(request: Request, team_leaders=Depends(get_all_teamleader)):
+def register(request: Request, team_leaders=Depends(get_all_teamleader)):
+    users = get_operators_name()
     return templates.TemplateResponse(name='register.html', context={"request": request,
-                                                                      "group_leader_phones": team_leaders})
+                                                                      "group_leader_phones": team_leaders,
+                                                                     "users": users})
 
 @app.get("/login", summary="Login Form", tags=['WebPages'])
 def login(request: Request):
@@ -49,10 +52,11 @@ def main(request: Request, reports=Depends(get_all_calls_by_oper), user = Depend
     filtered_reports = reports['res']
     stats = Statistic(list_of_records=filtered_reports, phone=filter_conditions['oper']).get_user_stat()
     warning_flag = reports['warning']
+    name = UsersNameDAO.user_name(user['phone_number'])
     return templates.TemplateResponse(name="index.html",
                                       context={'request': request,
                                                'reports1': reports['res'],
-                                               'user': user,
+                                               'user': (user, name),
                                                'filter': filter_conditions,
                                                "stats": stats,
                                                'warning_flag': warning_flag,},
@@ -65,11 +69,11 @@ def main(request: Request, reports=Depends(get_group_oper_stat), user=Depends(ge
     filtered_reports = reports['res']
     stats = Statistic(list_of_records=filtered_reports).get_group_stat()
     warning_flag = reports['warning']
-
+    name = UsersNameDAO.user_name(user['phone_number'])
     return templates.TemplateResponse(name="teamleader.html",
                                       context={'request': request,
                                                'reports2': reports['res'],
-                                               'user': user,
+                                               'user': (user, name),
                                                'filter': filter_conditions,
                                                "stats": stats,
                                                'warning_flag': warning_flag,
@@ -82,11 +86,11 @@ def main(request: Request, reports=Depends(get_group_oper_stat), user=Depends(ge
     filtered_reports = reports['res']
     stats = Statistic(list_of_records=filtered_reports).get_group_stat()
     warning_flag = reports['warning']
-
+    name = UsersNameDAO.user_name(user['phone_number'])
     return templates.TemplateResponse(name="teamleader.html",
                                       context={'request': request,
                                                'reports2': reports['res'],
-                                               'user': user,
+                                               'user': (user, name),
                                                'filter': filter_conditions,
                                                "stats": stats,
                                                'warning_flag': warning_flag,
@@ -96,8 +100,9 @@ def main(request: Request, reports=Depends(get_group_oper_stat), user=Depends(ge
 @app.get("/users", summary="Page of users list", tags=['WebPages'])
 def get_users_list(request: Request, user=Depends(get_me), team_leaders=Depends(get_all_teamleader)):
     user_list = get_all_users()
+    name = UsersNameDAO.user_name(user['phone_number'])
     return templates.TemplateResponse(name="users.html",
                                       context={'request': request,
-                                               'user': user,
+                                               'user': (user, name),
                                                "group_leader_phones": team_leaders},
                                       )

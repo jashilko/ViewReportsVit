@@ -32,6 +32,10 @@ h1 {
     font-size: 14px;
 }
 
+select{
+    padding: 5px;
+    font-size: 14px;
+}
 input {
     padding: 5px;
     font-size: 14px;

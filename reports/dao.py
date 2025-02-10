@@ -4,6 +4,7 @@ from sqlalchemy.future import select
 from database import session_maker
 from sqlalchemy import and_, or_, func, case, desc
 from reports.model import CDR
+from users.router import UsersNameDAO
 
 class CdrDAO(BaseDAO):
     model = CDR
@@ -62,6 +63,7 @@ class CdrDAO(BaseDAO):
             ).one()
         return {
             'phone_number': cls['oper'],
+            'oper_name': UsersNameDAO.user_name(cls['oper']),
             'total_calls': results.total_calls,
             'incoming_calls': results.incoming_calls if results.incoming_calls else 0,
             'outgoing_calls': results.outgoing_calls if results.outgoing_calls else 0,

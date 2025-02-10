@@ -32,7 +32,7 @@
         </ul>
     </div>
     <div class="statistics">
-        <h1>Список группы {{user.phone_number}}: </h1>
+        <h1>Руководитель группы {{user[0].phone_number}}: {{user[1]}} </h1>
 
     <!-- Фильтры -->
     <form id="filter-form" class="filter">
@@ -48,6 +48,7 @@
         <thead>
         <tr>
             <th>Оператор</th>
+            <th>Имя</th>
             <th>Всего звонков</th>
             <th>Входящие</th>
             <th>Исходящие</th>
@@ -59,6 +60,7 @@
         {% for report in reports2 %}
         <tr>
         <td><a href="/?oper={{ report.phone_number }}">{{ report.phone_number }}</a></td>
+        <td>{{ report.oper_name }}</td>
         <td>{{ report.total_calls }}</td>
         <td>{{ report.incoming_calls }}</td>
         <td>{{ report.outgoing_calls }}</td>

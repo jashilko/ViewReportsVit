@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from users.auth import get_password_hash, authenticate_user, create_access_token
 from fastapi.responses import Response
-from users.dao import UsersDAO, UsersManDAO
+from users.dao import UsersDAO, UsersManDAO, UsersNameDAO
 from users.schemas import SUserRegister, SUserAuth, SUser, SLeaderChange, SNewRoles
 from users.dependencies import get_current_user
 from fastapi.templating import Jinja2Templates
+import json
 
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
@@ -65,13 +66,29 @@ def logout_user(response: Response):
     response.delete_cookie(key="users_access_token")
     return {'ok': True, 'message': 'Пользователь успешно вышел из системы'}
 
-@router.get("/all_operators", summary="Получить всех операторов")
-def get_all_teamleader() -> list():
-    return UsersDAO.all_teamleader()
+@router.get("/all_teamleaders", summary="Get all teamleaders")
+def get_all_teamleader() -> dict():
+    all_team_leaders = UsersDAO.find_all(is_teamlead=True)
+    operator_names = get_operators_name()
+    # Преобразуйте данные  в словари
+    user_dict = {}
+    for user in all_team_leaders:
+        user_dict[user.phone_number] = operator_names.get(user.phone_number, "БезИмени")
+    return user_dict
 
 @router.get("/all_users", summary="Get all users")
-def get_all_users() -> list[SUser]:
-    return UsersDAO.find_all()
+def get_all_users():
+    operator_names = get_operators_name()  # Получаем список операторов
+    userlist = UsersDAO.find_all()  # Получаем список пользователей
+    # Преобразуйте данные  в словари
+    user_data = []
+    for user in UsersDAO.find_all():
+        user_dict = user.to_dict()
+        user_dict["oper_name"] = operator_names.get(user_dict["phone_number"], "БезИмени")
+        user_data.append(user_dict)
+
+
+    return user_data
 
 @router.post("/change-password", summary="Set new password")
 def post_change_password(new_pass: SUserAuth, user = Depends(get_current_user)):
@@ -103,3 +120,8 @@ def post_change_leader(new_roles: SNewRoles, user = Depends(get_current_user)):
         )
     UsersDAO.update_roles(new_roles.phone_number, new_roles.roles)
     return {'ok': True}
+
+@router.get("/all_operators_name", summary="Get operators with names")
+def get_operators_name() -> list():
+    return (UsersNameDAO.
+            all_operator_list())

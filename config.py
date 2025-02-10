@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     ADMIN_LOGIN: str
     START_PASS: str
     CONN_STR: str
+    CONN_STR_ASTERISK: str
     AUDIO_PATH: str
     FILTER_MINUS_DAYS_FROM: int
     model_config = SettingsConfigDict(
@@ -19,6 +20,9 @@ settings = Settings()
 
 def get_db_url():
     return settings.CONN_STR
+
+def get_db_asterisk_url():
+    return settings.CONN_STR_ASTERISK
 
 
 def get_auth_data():

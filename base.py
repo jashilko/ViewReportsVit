@@ -12,6 +12,7 @@ class BaseDAO:
             result = session.execute(query)
             return result.scalars().all()
 
+
     @classmethod
     def find_one_or_none(cls, **filter_by):
         with session_maker() as session:

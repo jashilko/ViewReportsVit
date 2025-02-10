@@ -11,7 +11,7 @@ function fetchUsers() {
 
 // Функция для загрузки руководителей с сервера
 function fetchLeaders() {
-    return fetch('/auth/all_operators') // URL API для получения списка руководителей
+    return fetch('/auth/all_teamleaders') // URL API для получения списка руководителей
         .then(response => response.json()) // Преобразуем ответ в JSON
         .catch(error => {
             console.error('Ошибка при загрузке пользователей:', error);
@@ -38,16 +38,16 @@ function loadUsers() {
                         li.innerHTML = `
                             <div class="user-info2">
                                 <span>Оператор: ${user.phone_number}</span>
-                                <p>Руководитель: ${user.phone_teamleader || ''}</p>
+                                <p>${user.oper_name || ''}</p>
                             </div>
                             <div class="form-group">
                                 <label for="group_leader_${user.phone_number}">Ваш руководитель</label>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <select id="group_leader_${user.phone_number}" name="group_leader">
                                         <option value="">-- Выберите руководителя --</option>
-                                        ${leaders.map(leader => `
-                                            <option value="${leader}" ${String(leader) === String(user.phone_teamleader) ? 'selected' : ''}>
-                                                ${leader}
+                                        ${Object.entries(leaders).map(([key, value]) => `
+                                            <option value="${key}" ${String(key) === String(user.phone_teamleader) ? 'selected' : ''}>
+                                                ${key} - ${value}
                                             </option>
                                         `).join('')}
                                     </select>
@@ -156,60 +156,78 @@ function updateRoles(phoneNumber) {
 
 // Функция для фильтрации пользователей
 function filterUsers() {
-    const phoneFilter = document.getElementById("filter-phone").value.toLowerCase();
 
-    // Загружаем список пользователей с сервера
+    const phoneFilter = document.getElementById("filter-phone").value.trim();
+
     fetchUsers()
         .then(users => {
             // Фильтруем пользователей по номеру телефона
             const filteredUsers = users.filter(user => {
-                const matchesPhone = user.phone.toLowerCase().includes(phoneFilter);
-                return matchesPhone;
+                return user.phone_number.includes(phoneFilter);
             });
 
-            // Очищаем и перерисовываем список с отфильтрованными пользователями
-            const userList = document.getElementById("user-list");
-            userList.innerHTML = '';
-            filteredUsers.forEach(user => {
+            // Перерисовываем список пользователей
+            renderUserList(filteredUsers);
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки пользователей:', error);
+            alert('Не удалось загрузить пользователей');
+        });
+}
+
+// Функция для отрисовки списка пользователей
+function renderUserList(users) {
+    const userList = document.getElementById("user-list");
+    userList.innerHTML = ''; // Очищаем список перед загрузкой
+
+    fetchLeaders()
+        .then(leaders => {
+            users.forEach(user => {
                 const li = document.createElement("li");
+                li.setAttribute("data-phone", user.phone_number);
 
                 li.innerHTML = `
                     <div class="user-info2">
-                        <span>${user.phone_number}</span>
-                        <p>Телефон: ${user.phone_teamleader}</p>
+                        <span>Оператор: ${user.phone_number}</span>
+                        <p>${user.oper_name || ''}</p>
                     </div>
-                        <div class="form-group">
-                        <label for="group_leader">Ваш руководитель</label>
-                        <select id="group_leader" name="group_leader">
-                            {% for phone in group_leader_phones %}
-                                <option value="{{ phone }}">{{ phone }}</option>
-                            {% endfor %}
-                        </select>
+                    <div class="form-group">
+                        <label for="group_leader_${user.phone_number}">Ваш руководитель</label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <select id="group_leader_${user.phone_number}" name="group_leader">
+                                <option value="">-- Выберите руководителя --</option>
+                                ${Object.entries(leaders).map(([key, value]) => `
+                                    <option value="${key}" ${String(key) === String(user.phone_teamleader) ? 'selected' : ''}>
+                                        ${key} - ${value}
+                                    </option>
+                                `).join('')}
+                            </select>
+                            <button onclick="changeLeader('${user.phone_number}')">Сменить руководителя</button>
+                        </div>
                     </div>
                     <div class="role-checkboxes">
                         <label>
-                    <input type="checkbox" value="Оператор" ${user.is_operator ? "checked" : ""}>
-                    Оператор
-                    </label>
-                    <label>
-                        <input type="checkbox" value="Контроллер" ${user.is_controller ? "checked" : ""}>
-                        Контроллер
-                    </label>
-                    <label>
-                        <input type="checkbox" value="Руководитель" ${user.is_teamlead ? "checked" : ""}>
-                        Руководитель
-
-                    </label>
-                        <button onclick="updateRoles(${user.phone_number})">Обновить роли</button>
-                        <button onclick="setNewPass(${user.phone_number})">Задать новый пароль</button>
+                            <input type="checkbox" value="Оператор" ${user.is_operator ? "checked" : ""}>
+                            Оператор
+                        </label>
+                        <label>
+                            <input type="checkbox" value="Контроллер" ${user.is_controller ? "checked" : ""}>
+                            Контроллер
+                        </label>
+                        <label>
+                            <input type="checkbox" value="Руководитель" ${user.is_teamlead ? "checked" : ""}>
+                            Руководитель
+                        </label>
+                        <button onclick="updateRoles('${user.phone_number}')">Обновить роли</button>
+                        <button onclick="setNewPass('${user.phone_number}')">Задать новый пароль</button>
                     </div>
                 `;
                 userList.appendChild(li);
             });
         })
         .catch(error => {
-            console.error('Ошибка загрузки пользователей:', error);
-            alert('Не удалось загрузить пользователей');
+            console.error('Ошибка загрузки руководителей:', error);
+            alert('Не удалось загрузить руководителей');
         });
 }
 
@@ -271,8 +289,46 @@ function setNewPass(phoneNumber) {
         }
     });
 }
-// Добавляем обработчики событий на поля фильтрации
-document.getElementById("filter-phone").addEventListener("input", filterUsers);
+let filterTimeout; // Таймер для задержки фильтрации
+
+document.getElementById("filter-phone").addEventListener("input", function () {
+    clearTimeout(filterTimeout); // Сбрасываем предыдущий таймер
+
+    const phoneFilter = this.value.trim();
+    filterTimeout = setTimeout(() => {
+        applyFilters(); // Запускаем фильтрацию
+    }, 500); // Задержка 500 мс
+});
+
+// Обработчик изменения фильтра по ролям
+document.getElementById("filter-role").addEventListener("change", function () {
+    applyFilters(); // Запускаем фильтрацию при изменении роли
+});
+
+function applyFilters() {
+    const phoneFilter = document.getElementById("filter-phone").value.trim();
+    const roleFilter = document.getElementById("filter-role").value; // Получаем выбранную роль
+
+    fetchUsers()
+        .then(users => {
+            const filteredUsers = users.filter(user => {
+                const matchesPhone = user.phone_number.includes(phoneFilter);
+                const matchesRole =
+                    !roleFilter || // Если роль не выбрана, отображаем всех
+                    (roleFilter === "Оператор" && user.is_operator) ||
+                    (roleFilter === "Контроллер" && user.is_controller) ||
+                    (roleFilter === "Руководитель" && user.is_teamlead);
+
+                return matchesPhone && matchesRole;
+            });
+
+            renderUserList(filteredUsers);
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки пользователей:', error);
+            alert('Не удалось загрузить пользователей');
+        });
+}
 
 // Загружаем пользователей при загрузке страницы
 window.onload = loadUsers;

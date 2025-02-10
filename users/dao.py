@@ -1,8 +1,8 @@
 from sqlalchemy import distinct, update
 
 from base import BaseDAO
-from users.models import SiteUser, userman_users
-from database import session_maker
+from users.models import SiteUser, userman_users, users
+from database import session_maker, session_maker_asterisk
 from sqlalchemy.future import select
 
 
@@ -25,19 +25,6 @@ class UsersDAO(BaseDAO):
                 session.rollback()  # Откатываем изменения в случае ошибки
                 raise e
 
-
-    @classmethod
-    def all_teamleader(cls):
-        with session_maker() as session:
-            query = select(SiteUser.phone_number).where(SiteUser.is_teamlead)
-            result = session.execute(query)
-            teamleader_info = result.scalars().all()
-
-            # Преобразуйте данные  в словари
-            teamleader_data = []
-            for teamleader in teamleader_info:
-                teamleader_data.append(teamleader)
-            return teamleader_data
 
     def all_operator_by_teamleader(cls):
         with session_maker() as session:
@@ -101,3 +88,30 @@ class UsersManDAO(BaseDAO):
             # Преобразуем данные в список
             opers_list = [oper_phone for oper_phone in result]
             return opers_list
+
+class UsersNameDAO(BaseDAO):
+    model = users
+
+    @classmethod
+    def all_operator_list(cls):
+        with session_maker() as session:
+            # Создаем запрос с distinct
+            query = select(users.extension, users.name)
+
+            # Выполняем запрос
+            result = session.execute(query).all()
+
+            # Преобразуем данные в список
+            opers_dict = {extension: name for extension, name in result}
+            return opers_dict
+    @classmethod
+
+    def user_name(cls, phone_number):
+        with session_maker() as session:
+            # Создаем запрос с distinct
+            query = select(users.name).where(users.extension == phone_number)
+
+            # Выполняем запрос
+            result = session.execute(query).first()
+
+            return result[0] if result else None

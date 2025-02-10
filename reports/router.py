@@ -58,7 +58,7 @@ def get_group_oper_stat(request_body: RBCdr = Depends(), user_data = Depends(get
     if 'date_from' in request_body.to_dict():
         pass
     else:
-        request_body.date_from = ((datetime.datetime.now() - datetime.timedelta(days=get_filter_minus_days_from()))
+        request_body.date_from = ((datetime.datetime.now())
                                   .replace(hour=0, minute=0, second=0)
                                   .strftime('%Y-%m-%dT%H:%M'))
     if 'date_to' in request_body.to_dict():
