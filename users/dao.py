@@ -78,7 +78,7 @@ class UsersManDAO(BaseDAO):
 
     @classmethod
     def all_operator_list(cls):
-        with session_maker() as session:
+        with session_maker_asterisk() as session:
             # Создаем запрос с distinct
             query = select(distinct(userman_users.username))
 
