@@ -94,7 +94,7 @@ class UsersNameDAO(BaseDAO):
 
     @classmethod
     def all_operator_list(cls):
-        with session_maker() as session:
+        with session_maker_asterisk() as session:
             # Создаем запрос с distinct
             query = select(users.extension, users.name)
 
@@ -107,7 +107,7 @@ class UsersNameDAO(BaseDAO):
     @classmethod
 
     def user_name(cls, phone_number):
-        with session_maker() as session:
+        with session_maker_asterisk() as session:
             # Создаем запрос с distinct
             query = select(users.name).where(users.extension == phone_number)
 
