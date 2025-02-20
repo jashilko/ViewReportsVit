@@ -1,7 +1,7 @@
 from sqlalchemy import distinct, update
 
 from base import BaseDAO
-from users.models import SiteUser, userman_users, users
+from users.models import SiteUser, users
 from database import session_maker, session_maker_asterisk
 from sqlalchemy.future import select
 
@@ -10,56 +10,57 @@ class UsersDAO(BaseDAO):
     model = SiteUser
 
     @classmethod
-    def update_password(cls, phone_num: str, new_pass: str):
-        with session_maker() as session:  # Использование контекста для сессии
+    async def update_password(cls, phone_num: str, new_pass: str):
+        async with session_maker() as session:  # Использование контекста для сессии
             try:
                 # Находим пользователя с указанным номером телефона
-                user = session.query(SiteUser).filter_by(phone_number=phone_num).first()
+                user = await cls.find_one_or_none(phone_number=phone_num)
                 if not user:
                     raise ValueError(f"Пользователь с номером {phone_num} не найден.")
 
                 # Обновляем пароль пользователя
                 user.password = new_pass  # Прямое изменение свойства
-                session.commit()  # Сохраняем изменения
+                session.add(user)  # Добавляем в сессию
+                await session.flush()  # Применяем изменения
+                await session.commit()  # Фиксируем в БД
             except Exception as e:
-                session.rollback()  # Откатываем изменения в случае ошибки
+                await session.rollback()  # Откатываем изменения в случае ошибки
                 raise e
 
-
-    def all_operator_by_teamleader(cls):
-        with session_maker() as session:
-            query = select(SiteUser.phone_number).where(SiteUser.phone_teamleader == cls['oper'])
-            result = session.execute(query)
-            opers_info = result.scalars().all()
-
+    @classmethod
+    async def all_operator_by_teamleader(cls, phone_teamleader):
+        async with session_maker() as session:
+            opers_info = await cls.find_all(phone_teamleader=phone_teamleader)
             # Преобразуйте данные  в словари
             opers_data = []
             for oper_phone in opers_info:
-                opers_data.append(oper_phone)
+                opers_data.append(oper_phone.phone_number)
             return opers_data
 
     @classmethod
-    def update_leader(cls, phone_number, new_leader):
-        with session_maker() as session:  # Использование контекста для сессии
+    async def update_leader(cls, phone_number, new_leader):
+        async with session_maker() as session:  # Использование контекста для сессии
             try:
                 # Находим пользователя с указанным номером телефона
-                user = session.query(SiteUser).filter_by(phone_number=phone_number).first()
+                user = await cls.find_one_or_none(phone_number=phone_number)
                 if not user:
                     raise ValueError(f"Пользователь с номером {phone_number} не найден.")
 
                 # Обновляем лидера пользователя
                 user.phone_teamleader = new_leader  # Прямое изменение свойства
-                session.commit()  # Сохраняем изменения
+                session.add(user)  # Добавляем в сессию
+                await session.flush()  # Применяем изменения
+                await session.commit()  # Фиксируем в БД
             except Exception as e:
-                session.rollback()  # Откатываем изменения в случае ошибки
+                await session.rollback()  # Откатываем изменения в случае ошибки
                 raise e
 
     @classmethod
-    def update_roles(cls, phone_number, roles):
-        with session_maker() as session:  # Использование контекста для сессии
+    async def update_roles(cls, phone_number, roles):
+        async with session_maker() as session:  # Использование контекста для сессии
             try:
                 # Находим пользователя с указанным номером телефона
-                user = session.query(SiteUser).filter_by(phone_number=phone_number).first()
+                user = await cls.find_one_or_none(phone_number=phone_number)
                 if not user:
                     raise ValueError(f"Пользователь с номером {phone_number} не найден.")
 
@@ -67,51 +68,48 @@ class UsersDAO(BaseDAO):
                 user.is_operator = True if "Оператор" in roles else False
                 user.is_teamlead = True if "Руководитель" in roles else False
                 user.is_controller = True if "Контроллер" in roles else False
-                session.commit()  # Сохраняем изменения
+                session.add(user)  # Добавляем в сессию
+                await session.flush()  # Применяем изменения
+                await session.commit()  # Фиксируем в БД
             except Exception as e:
-                session.rollback()  # Откатываем изменения в случае ошибки
+                await session.rollback()  # Откатываем изменения в случае ошибки
                 raise e
-
-
-class UsersManDAO(BaseDAO):
-    model = userman_users
-
-    @classmethod
-    def all_operator_list(cls):
-        with session_maker_asterisk() as session:
-            # Создаем запрос с distinct
-            query = select(distinct(userman_users.username))
-
-            # Выполняем запрос
-            result = session.execute(query).scalars().all()
-
-            # Преобразуем данные в список
-            opers_list = [oper_phone for oper_phone in result]
-            return opers_list
 
 class UsersNameDAO(BaseDAO):
     model = users
 
     @classmethod
-    def all_operator_list(cls):
-        with session_maker_asterisk() as session:
+    async def all_operator_list(cls):
+        async with session_maker_asterisk() as session:
             # Создаем запрос с distinct
             query = select(users.extension, users.name)
 
             # Выполняем запрос
-            result = session.execute(query).all()
-
+            result = await session.execute(query)
+            all_oper_list = result.all()
             # Преобразуем данные в список
-            opers_dict = {extension: name for extension, name in result}
+            opers_dict = {extension: name for extension, name in all_oper_list}
             return opers_dict
-    @classmethod
 
-    def user_name(cls, phone_number):
-        with session_maker_asterisk() as session:
+    @classmethod
+    async def user_name(cls, phone_number):
+        session = session_maker_asterisk()
+        try:
+            query = select(users.name).where(users.extension == phone_number).limit(1)
+            result = await session.execute(query)
+            return result.scalar_one_or_none()
+        finally:
+            await session.close()
+
+    @classmethod
+    async def all_operator_phone(cls):
+        async with session_maker_asterisk() as session:
             # Создаем запрос с distinct
-            query = select(users.name).where(users.extension == phone_number)
+            query = select(distinct(users.extension))
 
             # Выполняем запрос
-            result = session.execute(query).first()
-
-            return result[0] if result else None
+            result = await session.execute(query)
+            all_oper_info = result.scalars().all()
+            # Преобразуем данные в список
+            opers_list = [oper_phone for oper_phone in all_oper_info]
+            return opers_list

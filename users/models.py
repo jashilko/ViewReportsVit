@@ -39,10 +39,6 @@ class SiteUser(Base):
             "role": role
         }
 
-class userman_users(Base):
-    id: Mapped[int_pk]
-    username: Mapped[str_uniq]
-
 class users(Base):
     extension: Mapped[int_pk]
     name: Mapped[str] = mapped_column(String(50))
