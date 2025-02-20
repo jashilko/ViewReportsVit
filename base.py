@@ -6,29 +6,28 @@ from sqlalchemy import update as sqlalchemy_update
 class BaseDAO:
     model = None
     @classmethod
-    def find_all(cls, **filter_by):
-        with session_maker() as session:
+    async def find_all(cls, **filter_by):
+        async with session_maker() as session:
             query = select(cls.model).filter_by(**filter_by)
-            result = session.execute(query)
-            return result.scalars().all()
+            result = await session.execute(query)
+            return list(result.scalars())
 
 
     @classmethod
-    def find_one_or_none(cls, **filter_by):
-        with session_maker() as session:
+    async def find_one_or_none(cls, **filter_by):
+        async with session_maker() as session:
             query = select(cls.model).filter_by(**filter_by)
-            result = session.execute(query)
+            result = await session.execute(query)
             return result.scalar_one_or_none()
 
     @classmethod
-    def add(cls, **values):
-        with session_maker() as session:
-            with session.begin():
-                new_instance = cls.model(**values)
-                session.add(new_instance)
-                try:
-                    session.commit()
-                except SQLAlchemyError as e:
-                    session.rollback()
-                    raise e
-                return new_instance
+    async def add(cls, **values):
+        async with session_maker() as session:
+            new_instance = cls.model(**values)
+            session.add(new_instance)
+            try:
+                await session.commit()
+            except SQLAlchemyError as e:
+                await session.rollback()
+                raise e
+            return new_instance

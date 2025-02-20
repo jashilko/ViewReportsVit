@@ -51,7 +51,7 @@ function loadUsers() {
                                             </option>
                                         `).join('')}
                                     </select>
-                                    <button onclick="changeLeader('${user.phone_number}')">Сменить руководителя</button>
+                                    <button onclick="changeLeader('${user.phone_number}')">Сменить его</button>
                                 </div>
                             </div>
                             <div class="role-checkboxes">
@@ -68,7 +68,7 @@ function loadUsers() {
                                     Руководитель
                                 </label>
                                 <button onclick="updateRoles('${user.phone_number}')">Обновить роли</button>
-                                <button onclick="setNewPass('${user.phone_number}')">Задать новый пароль</button>
+                                <button onclick="setNewPass('${user.phone_number}')">Новый пароль</button>
                             </div>
                         `;
                         userList.appendChild(li);
@@ -202,7 +202,7 @@ function renderUserList(users) {
                                     </option>
                                 `).join('')}
                             </select>
-                            <button onclick="changeLeader('${user.phone_number}')">Сменить руководителя</button>
+                            <button onclick="changeLeader('${user.phone_number}')">Сменить его</button>
                         </div>
                     </div>
                     <div class="role-checkboxes">
@@ -219,7 +219,7 @@ function renderUserList(users) {
                             Руководитель
                         </label>
                         <button onclick="updateRoles('${user.phone_number}')">Обновить роли</button>
-                        <button onclick="setNewPass('${user.phone_number}')">Задать новый пароль</button>
+                        <button onclick="setNewPass('${user.phone_number}')">Новый пароль</button>
                     </div>
                 `;
                 userList.appendChild(li);

@@ -20,7 +20,7 @@ def get_token(request: Request):
     return token
 
 
-def get_current_user(token: str = Depends(get_token)):
+async def get_current_user(token: str = Depends(get_token)):
     try:
         auth_data = get_auth_data()
         payload = jwt.decode(token, auth_data['secret_key'], algorithms=[auth_data['algorithm']])
@@ -37,14 +37,7 @@ def get_current_user(token: str = Depends(get_token)):
     if not phone_number:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Не найден ID пользователя')
 
-    user = UsersDAO.find_one_or_none(phone_number=phone_number)
+    user = await UsersDAO.find_one_or_none(phone_number=phone_number)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='User not found')
-
-
     return user
-
-def get_current_admin_user(current_user: SiteUser = Depends(get_current_user)):
-    if current_user.is_admin:
-        return current_user
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Недостаточно прав!')
