@@ -104,12 +104,6 @@ def test_access_token_various_data(data):
     for key in data:
         assert decoded[key] == data[key], f"Поле {key} должно совпадать"
 
-@pytest.fixture
-def mock_user():
-    password = "securepassword"
-    hashed_password = get_password_hash(password)
-    return type("User", (), {"phone_number": "+123456789", "password": hashed_password})
-
 @pytest.mark.asyncio
 async def test_authenticate_user_success(monkeypatch, mock_user):
     async_mock = AsyncMock(return_value=mock_user)
