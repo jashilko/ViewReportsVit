@@ -57,15 +57,27 @@ ALGORITHM=HS256
 ADMIN_LOGIN=999
 # Стартовый пароль администратора
 START_PASS=pass
-# Строка подключения к БД 
-CONN_STR=mysql+asyncmy://user:pass@host:port/db-name
-# Строка подключения к БД Asterisk 
-CONN_STR_ASTERISK=mysql+asyncmy://user:pass@host:port/db-name
+# Строка подключения к БД (asteriskcdrdb)
+CONN_STR=mysql+asyncmy://user:pass@host:port/db-name-asteriskcdrdb
+# Строка подключения к БД (asterisk)
+CONN_STR_ASTERISK=mysql+asyncmy://user:pass@host:port/db-name-asterisk
 # Путь, где храняться записи звонков
 AUDIO_PATH=./audio
 # Настройка, сколько дней назад фильтр будет отображаться по умолчанию дата От в фильтрах
 FILTER_MINUS_DAYS_FROM=5
 ```
 
-## Запуск приложения
+## Установка и запуск приложения
+0. Предварительно установить Docker и docker-compose для вашей ОС
+1. Клонировать репозиторий:
+   ```bash
+   git clone https://github.com/jashilko/ViewReportsVit.git
+   ```
+2. Создать в директории настроечный файл `.env`
+3. Запустить docker-compose:
+   ```bash
+   docker-compose up
+   ```
+## Особенности первого запуска
+- При первом запуске в БД asteriskcdrdb автоматически создастся таблица SiteUser, а в ней пользователь - Администратор сайта с логином ADMIN_LOGIN
 
