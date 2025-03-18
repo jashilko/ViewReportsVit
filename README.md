@@ -28,7 +28,7 @@
 ## Стек технологий
 - **Веб-фреймворк**: FastAPI
 - **Фронтэнд**: HTML, JavaScript, Jinja2
-- **ORM**: SQLAlchemy с асинхронной поддержкой через aiosqlite
+- **ORM**: SQLAlchemy с асинхронной поддержкой
 - **Авторизация/Аутентификация**: bcrypt для хеширования паролей, python-jose для защиты данных с использованием JWT
 - **Тесты**: PyTest
 - **Deploy**: Docker, docker-compose
