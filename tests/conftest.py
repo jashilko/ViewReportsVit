@@ -39,7 +39,7 @@ def admin_user_class():
 def usual_user_class():
     return SiteUser(
         id=2,
-        phone_number="+123456789",
+        phone_number="+987654321",
         password=get_password_hash("userpass"),
         is_admin=False,
         is_operator=True,
