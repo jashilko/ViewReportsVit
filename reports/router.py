@@ -16,7 +16,8 @@ async def get_all_calls_by_oper(request_body: RBCdr = Depends(), user_data = Dep
     # Если пользователь не указан в запросе, делаем запрос по залогиненному
     if 'oper' in request_body.to_dict():
         if (request_body.to_dict()['oper'] != user_data.phone_number
-                and not request_body.to_dict()['oper'] in await UsersDAO.all_operator_by_teamleader(user_data.phone_number)
+                and not request_body.to_dict()['oper'] in
+                        [oper.phone_number for oper in await UsersDAO.find_all(phone_teamleader=user_data.phone_number)]
             and not user_data.is_controller):
             return {'req': request_body.to_dict(), 'res': {}, 'warning': 'Нет прав на просмотр звонков выбранного оператора'}
     else:
@@ -46,7 +47,7 @@ async def get_group_oper_stat(request_body: RBCdr = Depends(), user_data=Depends
         users_list = await UsersNameDAO.all_operator_phone()
     elif user_data.is_teamlead:
         request_body.oper = user_data.phone_number
-        users_list = await UsersDAO.all_operator_by_teamleader(request_body.oper)
+        users_list = [oper.phone_number for oper in await UsersDAO.find_all(phone_teamleader=request_body.oper)]
     else:
         return {'req': request_body.to_dict(), 'res': [], 'warning': "Нет прав на просмотр статистики группы"}
 
