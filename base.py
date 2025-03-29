@@ -1,7 +1,6 @@
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.future import select
 from database import session_maker
-from sqlalchemy import update as sqlalchemy_update
 
 class BaseDAO:
     model = None
@@ -31,3 +30,28 @@ class BaseDAO:
                 await session.rollback()
                 raise e
             return new_instance
+
+    @classmethod
+    async def update(cls, id: int, **values):
+        """
+        Общий метод для обновления записей
+        :param id: ID записи для обновления
+        :param values: Поля и их новые значения
+        :return: Обновленный объект
+        """
+        async with session_maker() as session:
+            try:
+                instance = await cls.find_one_or_none(id=id)
+                if not instance:
+                    raise ValueError(f"Объект с ID {id} не найден")
+
+                for key, value in values.items():
+                    setattr(instance, key, value)
+
+                session.add(instance)
+                await session.flush()  # Применяем изменения
+                await session.commit()  # Фиксируем в БД
+                return instance
+            except Exception as e:
+                await session.rollback()
+                raise e

@@ -28,27 +28,10 @@ def mock_get_current_user_is_usual(monkeypatch, usual_user_class):
     app.dependency_overrides[get_current_user] = mock_get_current_user
 
 @pytest.fixture()
-def mock_find_one_or_none_return_none(monkeypatch):
-    async def mock_find_one_or_none(phone_number: str):
-        return None
-    monkeypatch.setattr(UsersDAO, "find_one_or_none", mock_find_one_or_none)
-
-@pytest.fixture()
-def mock_find_one_or_none_return_usual(monkeypatch, usual_user_class):
-    async def mock_find_one_or_none(phone_number: str):
-        return regular_user
-    monkeypatch.setattr(UsersDAO, "find_one_or_none", mock_find_one_or_none)
-
-@pytest.fixture()
 def mock_add(monkeypatch):
     async def mock_add(**kwargs):
         return None
     monkeypatch.setattr(UsersDAO, "add", mock_add)
-
-@pytest.fixture
-def regular_user():
-    """Фикстура обычного пользователя (без прав админа)."""
-    return {"phone_number": "+987654321", "password": get_password_hash("userpass"), "is_admin": False}
 
 @pytest.fixture
 def mock_get_operators_name(monkeypatch):
@@ -68,13 +51,15 @@ def mock_find_all(monkeypatch, usual_user_class, admin_user_class):
         return [usual_user_class, admin_user_class]
     monkeypatch.setattr(UsersDAO, "find_all", mock_all)
 
-@pytest.mark.asyncio
-async def test_change_password_success(mock_get_current_user_is_admin, monkeypatch):
-    client = TestClient(app)
-
-    async def mock_update_password(phone_number, new_password):
+@pytest.fixture()
+def mock_userdao_update(monkeypatch, usual_user_class, admin_user_class):
+    async def mock_update(phone_number: str, **updates):
         return None
-    monkeypatch.setattr(UsersDAO, "update_password", mock_update_password)
+    monkeypatch.setattr(UsersDAO, "update_by_phone", mock_update)
+
+@pytest.mark.asyncio
+async def test_change_password_success(mock_get_current_user_is_admin, mock_userdao_update):
+    client = TestClient(app)
 
     # Новый пароль
     new_password = "newsecurepassword"
@@ -230,24 +215,6 @@ async def test_change_password_not_admin(mock_get_current_user_is_usual):
     )
     assert response.status_code == 403
 
-@pytest.mark.asyncio
-async def test_change_password(mock_get_current_user_is_admin, monkeypatch):
-    client = TestClient(app)
-    user_data = {
-        "phone_number": "+123456789",  # Номер телефона должен совпадать с usual_user_class
-        "password": "userpass"  # Пароль должен совпадать с usual_user_class
-    }
-
-    async def mock_update_password(phone_number: str, hash_new_pass: str):
-        return None
-    monkeypatch.setattr(UsersDAO, "update_password", mock_update_password)
-
-    response = client.post(
-        "/auth/change-password",
-        json=user_data
-    )
-    assert response.status_code == 200
-    assert response.json() == {'ok': True}
 
 @pytest.mark.asyncio
 async def test_change_leader_not_admin(mock_get_current_user_is_usual):
@@ -263,11 +230,7 @@ async def test_change_leader_not_admin(mock_get_current_user_is_usual):
     assert response.status_code == 403
 
 @pytest.mark.asyncio
-async def test_change_leader(mock_get_current_user_is_admin, monkeypatch):
-    # Мокируем функцию в ДАО
-    async def mock_update_leader(phone_number: str, new_leader: str):
-        return None
-    monkeypatch.setattr(UsersDAO, "update_leader", mock_update_leader)
+async def test_change_leader(mock_get_current_user_is_admin, mock_userdao_update):
 
     client = TestClient(app)
     user_data = {
@@ -295,12 +258,7 @@ async def test_change_roles_not_admin(mock_get_current_user_is_usual):
     assert response.status_code == 403
 
 @pytest.mark.asyncio
-async def test_change_roles(mock_get_current_user_is_admin, monkeypatch):
-    # Мокируем функцию в ДАО
-    async def mock_update_roles(phone_number: str, new_leader: str):
-        return None
-    monkeypatch.setattr(UsersDAO, "update_roles", mock_update_roles)
-
+async def test_change_roles(mock_get_current_user_is_admin, mock_userdao_update):
     client = TestClient(app)
     user_data = {
         "phone_number": "+123456789",
@@ -314,12 +272,7 @@ async def test_change_roles(mock_get_current_user_is_admin, monkeypatch):
     assert response.json() == {'ok': True}
 
 @pytest.mark.asyncio
-async def test_change_roles_error_role_type(mock_get_current_user_is_admin, monkeypatch):
-    # Мокируем функцию в ДАО
-    async def mock_update_roles(phone_number: str, new_leader: str):
-        return None
-    monkeypatch.setattr(UsersDAO, "update_roles", mock_update_roles)
-
+async def test_change_roles_error_role_type(mock_get_current_user_is_admin, mock_userdao_update):
     client = TestClient(app)
     user_data = {
         "phone_number": "+123456789",
