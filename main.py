@@ -30,6 +30,7 @@ app.include_router(router_users)
 create_table(SiteUser)
 register_admin(get_pass())
 
+
 @app.get("/register", summary="Registration Form", tags=['WebPages'])
 def register(request: Request, team_leaders=Depends(get_all_teamleader)):
     users = get_operators_name()
