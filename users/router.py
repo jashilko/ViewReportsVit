@@ -66,7 +66,7 @@ async def logout_user(response: Response):
 @router.get("/all_teamleaders", summary="Get all teamleaders")
 async def get_all_teamleader() -> dict():
     all_team_leaders = await UsersDAO.find_all(is_teamlead=True)
-    operator_names = await get_operators_name()
+    operator_names = await UsersNameDAO.all_operator_list()
     # Преобразуйте данные  в словари
     user_dict = {}
     for user in all_team_leaders:
@@ -76,7 +76,7 @@ async def get_all_teamleader() -> dict():
 
 @router.get("/all_users", summary="Get all users")
 async def get_all_users():
-    operator_names = await get_operators_name()  # Получаем список операторов
+    operator_names = await UsersNameDAO.all_operator_list()  # Получаем список операторов
     userlist = await UsersDAO.find_all()  # Получаем список пользователей
     # Преобразуйте данные  в словари
     user_data = []
@@ -125,6 +125,6 @@ async def post_change_leader(new_roles: SNewRoles, user=Depends(get_current_user
     return {'ok': True}
 
 
-@router.get("/all_operators_name", summary="Get operators with names")
-async def get_operators_name():
-    return await UsersNameDAO.all_operator_list()
+# @router.get("/all_operators_name", summary="Get operators with names")
+# async def get_operators_name():
+#     return await UsersDAO.find_all(fields=["phone_number"])

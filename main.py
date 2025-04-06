@@ -3,7 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 from reports.router import router as router_cdr
-from users.router import router as router_users, get_all_users, register_admin, get_operators_name
+from users.router import router as router_users, get_all_users, register_admin
 from reports.router import get_all_calls_by_oper, get_group_oper_stat
 from users.router import get_me, get_all_teamleader
 from database import create_table
@@ -36,7 +36,7 @@ loop.create_task(register_admin(get_pass()))
 
 @app.get("/register", summary="Registration Form", tags=['WebPages'])
 async def register(request: Request, team_leaders=Depends(get_all_teamleader)):
-    users = await get_operators_name()
+    users = UsersNameDAO.all_operator_list()
     return templates.TemplateResponse(name='register.html', context={"request": request,
                                                                       "group_leader_phones": team_leaders,
                                                                      "users": users})

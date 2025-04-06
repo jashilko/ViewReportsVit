@@ -9,13 +9,6 @@ from tests import database_mock
 from sqlalchemy import insert
 from users.models import SiteUser
 
-@pytest.fixture
-async def async_client():
-    """Фикстура для тестирования FastAPI."""
-    print("Создание тестового клиента...")  # ➜ Добавим отладочный вывод
-    async with AsyncClient(app=app, base_url="http://test") as client:
-        print("Тестовый клиент создан!")  # ➜ Отладка: Убедимся, что клиент реально создаётся
-        yield client
 
 @pytest.fixture
 def admin_user():
@@ -26,6 +19,7 @@ def admin_user():
         "is_admin": True,
         "token": "fake_admin_token"  # Добавляем токен
     }
+
 
 @pytest.fixture
 def admin_user_class():
@@ -39,6 +33,8 @@ def admin_user_class():
         is_controller=False,
         phone_teamleader=""
     )
+
+
 @pytest.fixture
 def usual_user_class():
     return SiteUser(
@@ -51,6 +47,7 @@ def usual_user_class():
         is_controller=False,
         phone_teamleader="3242423"
     )
+
 
 @pytest.fixture
 def mock_user():
@@ -66,8 +63,7 @@ def mock_database(monkeypatch):
     monkeypatch.setattr('base.session_maker', database_mock.session_maker)
 
 
-
-@pytest_asyncio.fixture(scope="function")
+@pytest_asyncio.fixture()
 async def setup_test_db():
     from tests.database_mock import engine, init_models
     await init_models()
@@ -95,19 +91,27 @@ async def add_test_users(test_session):
     await test_session.execute(insert(SiteUser), test_data)
     await test_session.commit()
 
+
 @pytest.fixture()
 def mock_find_one_or_none_return_none(monkeypatch):
     async def mock_find_one_or_none(phone_number: str):
         return None
+
     monkeypatch.setattr(UsersDAO, "find_one_or_none", mock_find_one_or_none)
 
-@pytest.fixture
+
 def regular_user():
     """Фикстура обычного пользователя (без прав админа)."""
-    return {"phone_number": "+987654321", "password": get_password_hash("userpass"), "is_admin": False}
+    return {
+        "phone_number": "+987654321",
+        "password": get_password_hash("userpass"),
+        "is_admin": False
+    }
+
 
 @pytest.fixture()
 def mock_find_one_or_none_return_usual(monkeypatch, usual_user_class):
     async def mock_find_one_or_none(phone_number: str):
-        return regular_user
+        return regular_user()
+
     monkeypatch.setattr(UsersDAO, "find_one_or_none", mock_find_one_or_none)

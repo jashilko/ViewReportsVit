@@ -5,10 +5,18 @@ from database import session_maker
 class BaseDAO:
     model = None
     @classmethod
-    async def find_all(cls, **filter_by):
+    async def find_all(cls, fields=None, **filter_by):
         async with session_maker() as session:
-            query = select(cls.model).filter_by(**filter_by)
+            if fields is None:
+                query = select(cls.model).filter_by(**filter_by)
+            else:
+                if not isinstance(fields, (list, tuple)):
+                    raise ValueError ("Fields must be a list or tuple of column names")
+                columns = [getattr(cls.model, field) for field in fields]
+                query = select(*columns).filter_by(**filter_by)
             result = await session.execute(query)
+            if fields is not None:
+                return [dict(row._mapping) for row in result]
             return list(result.scalars())
 
 

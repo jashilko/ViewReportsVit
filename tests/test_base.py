@@ -5,13 +5,21 @@ from users.dao import UsersDAO
 
 @pytest.mark.asyncio
 async def test_find_all(setup_test_db, add_test_users):
-
     result = await UsersDAO.find_all()
     phone_numbers = {item.phone_number for item in result}
     print(f"Found phone numbers: {phone_numbers}")
-
     assert len(result) == 3
     assert phone_numbers == {"999", "101", "102"}
+
+
+@pytest.mark.asyncio
+async def test_find_all_two_fields(setup_test_db, add_test_users):
+    result = await UsersDAO.find_all(fields=["phone_number", "phone_teamleader"])
+
+    assert len(result) == 3
+    assert isinstance(result, list)
+    assert result[0]["phone_number"] == "999"
+    assert result[0]["phone_teamleader"] == "101"
 
 
 @pytest.mark.asyncio
@@ -75,6 +83,7 @@ async def test_add_success(setup_test_db):
     assert db_user.phone_number == "777"
     assert db_user.is_operator is True
 
+
 @pytest.mark.asyncio
 async def test_add_with_invalid_data(setup_test_db):
     """Тест добавления с некорректными данными"""
@@ -85,6 +94,7 @@ async def test_add_with_invalid_data(setup_test_db):
             password="123",
             is_operator=True
         )
+
 
 @pytest.mark.asyncio
 async def test_add_duplicate(setup_test_db, add_test_users):
@@ -97,6 +107,7 @@ async def test_add_duplicate(setup_test_db, add_test_users):
             password="123",
             is_operator=True
         )
+
 
 @pytest.mark.asyncio
 async def test_update_success(setup_test_db, add_test_users):

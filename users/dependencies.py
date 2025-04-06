@@ -1,5 +1,5 @@
 from fastapi import Request, HTTPException, status, Depends
-from jose import jwt, JWTError
+from jose import jwt, JWTError, ExpiredSignatureError
 from datetime import datetime, timezone
 
 from starlette.responses import RedirectResponse
@@ -24,13 +24,10 @@ async def get_current_user(token: str = Depends(get_token)):
     try:
         auth_data = get_auth_data()
         payload = jwt.decode(token, auth_data['secret_key'], algorithms=[auth_data['algorithm']])
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Токен истек')
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Токен не валидный!')
-
-    expire = payload.get('exp')
-    expire_time = datetime.fromtimestamp(int(expire), tz=timezone.utc)
-    if (not expire) or (expire_time < datetime.now(timezone.utc)):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Токен истек')
 
     phone_number = payload.get('sub')
 
@@ -41,3 +38,4 @@ async def get_current_user(token: str = Depends(get_token)):
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='User not found')
     return user
+
